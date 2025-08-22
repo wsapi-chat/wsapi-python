@@ -3,6 +3,8 @@ from ..http import WSApiHttp, ApiResponse
 from ..models.entities.contacts.contact_info import ContactInfo
 from ..models.entities.contacts.contact_picture import ContactPicture
 from ..models.entities.contacts.contact_business_profile import ContactBusinessProfile
+from ..models.requests.contacts.contact_create_request import ContactCreateRequest
+from ..models.requests.contacts.contact_update_request import ContactUpdateRequest
 
 
 class ContactsClient:
@@ -22,14 +24,14 @@ class ContactsClient:
     def get_business_profile(self, contact_id: str) -> ContactBusinessProfile:
         return self._http.send_json("GET", f"/contacts/{contact_id}/business", model=ContactBusinessProfile)
 
-    def create(self, payload: dict) -> None:
-        self._http.send_json("POST", "/contacts", model=dict, json=payload)
+    def create(self, request: ContactCreateRequest) -> None:
+        self._http.send_json("POST", "/contacts", model=None, json=request.model_dump(by_alias=True))
 
-    def update(self, contact_id: str, payload: dict) -> None:
-        self._http.send_json("PUT", f"/contacts/{contact_id}", model=dict, json=payload)
+    def update(self, contact_id: str, request: ContactUpdateRequest) -> None:
+        self._http.send_json("PUT", f"/contacts/{contact_id}", model=None, json=request.model_dump(by_alias=True))
 
     def subscribe_presence(self, contact_id: str) -> None:
-        self._http.send_json("POST", f"/contacts/{contact_id}/presence", model=dict, json={})
+        self._http.send_json("POST", f"/contacts/{contact_id}/presence", model=None, json={})
 
     # Try methods
     def try_list(self) -> ApiResponse[list[ContactInfo]]:
@@ -44,11 +46,11 @@ class ContactsClient:
     def try_get_business_profile(self, contact_id: str) -> ApiResponse[ContactBusinessProfile]:
         return self._http.try_send_json("GET", f"/contacts/{contact_id}/business", model=ContactBusinessProfile)
 
-    def try_create(self, payload: dict) -> ApiResponse[object]:
-        return self._http.try_send_json("POST", "/contacts", model=dict, json=payload)
+    def try_create(self, request: ContactCreateRequest) -> ApiResponse[object]:
+        return self._http.try_send_json("POST", "/contacts", model=None, json=request.model_dump(by_alias=True))
 
-    def try_update(self, contact_id: str, payload: dict) -> ApiResponse[object]:
-        return self._http.try_send_json("PUT", f"/contacts/{contact_id}", model=dict, json=payload)
+    def try_update(self, contact_id: str, request: ContactUpdateRequest) -> ApiResponse[object]:
+        return self._http.try_send_json("PUT", f"/contacts/{contact_id}", model=None, json=request.model_dump(by_alias=True))
 
     def try_subscribe_presence(self, contact_id: str) -> ApiResponse[object]:
-        return self._http.try_send_json("POST", f"/contacts/{contact_id}/presence", model=dict, json={})
+        return self._http.try_send_json("POST", f"/contacts/{contact_id}/presence", model=None, json={})

@@ -3,6 +3,7 @@ from typing import Optional
 
 from .http import WSApiHttp
 from .api.instance import InstanceClient
+from .api.account import AccountClient
 from .api.messages import MessagesClient
 from .api.media import MediaClient
 from .api.session import SessionClient
@@ -26,6 +27,7 @@ class WSApiClient:
 
         # Surface parity with .NET: expose sub-clients
         self.instance = InstanceClient(self._http)
+        self.account = AccountClient(self._http)
         self.messages = MessagesClient(self._http)
         self.media = MediaClient(self._http)
         self.session = SessionClient(self._http)
