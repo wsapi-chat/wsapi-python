@@ -1,21 +1,22 @@
 # WSApi Python SDK
 
-A Python SDK for integrating with the WSApi platform. Send WhatsApp messages, manage chats/contacts, and receive real-time events via webhooks or Server‑Sent Events (SSE).
+A Python SDK for integrating with the WSApi platform. Send WhatsApp messages, manage chats/contacts, and receive real-time events via webhooks or Server‑Sent Events (SSE). This is an independent API and is not affiliated with META or WhatsApp
 
 ## Features
 
-- **HTTP Client**: Simple, typed models (Pydantic v2) for all API operations
-- **Dual API Pattern**: Exception-based and `try_` methods for error handling
-- **Resource Clients**: Messages, Instance, Media, Contacts, Groups, Chats, Users, Calls
-- **Event Handling**: Webhooks and SSE client for real-time events with parsed models
+-   **HTTP Client**: Simple, typed models (Pydantic v2) for all API operations
+-   **Dual API Pattern**: Exception-based and `try_` methods for error handling
+-   **Resource Clients**: Messages, Instance, Media, Contacts, Groups, Chats, Users, Calls
+-   **Event Handling**: Webhooks and SSE client for real-time events with parsed models
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Python 3.9+ (as specified in pyproject.toml)
-- WSApi instance credentials (API Key and Instance Id)
+
+-   Python 3.9+ (as specified in pyproject.toml)
+-   WSApi instance credentials (API Key and Instance Id)
 
 ### Installation
 
@@ -29,9 +30,9 @@ pip install wsapi-client
 
 **From source (development):**
 
-1) Clone this repository
-2) Create and activate a virtual environment (recommended)
-3) Install in editable mode:
+1. Clone this repository
+2. Create and activate a virtual environment (recommended)
+3. Install in editable mode:
 
 ```bash
 pip install -e .
@@ -95,29 +96,29 @@ client.calls.reject("call_123", RejectCallRequest(caller="+15551234567"))
 
 ### `WSApiClient` Resources:
 
-- **`messages`**: send text/image/video/audio/voice/sticker/document/contact/location/link/reaction, edit_text; mark_as_read, star, delete, delete_for_me
-- **`instance`**: get settings, etc.
-- **`media`**: download files
-- **`contacts`**: contact management operations
-- **`groups`**: group management operations  
-- **`chats`**: chat management operations
-- **`users`**: get_by_id/try_get_by_id
-- **`calls`**: reject/try_reject
+-   **`messages`**: send text/image/video/audio/voice/sticker/document/contact/location/link/reaction, edit_text; mark_as_read, star, delete, delete_for_me
+-   **`instance`**: get settings, etc.
+-   **`media`**: download files
+-   **`contacts`**: contact management operations
+-   **`groups`**: group management operations
+-   **`chats`**: chat management operations
+-   **`users`**: get_by_id/try_get_by_id
+-   **`calls`**: reject/try_reject
 
 ### ApiResponse[T] Pattern
 
 Each method has an exception-based and a `try_` variant:
 
-- **`result: T | None`** — data when successful
-- **`error: ProblemDetails | None`** — error when not successful  
-- **`is_success: bool`** — convenience flag
+-   **`result: T | None`** — data when successful
+-   **`error: ProblemDetails | None`** — error when not successful
+-   **`is_success: bool`** — convenience flag
 
 ### Important Notes
 
-- **Close the client** when you're done: `client.close()`
-- **No-content endpoints** (204) return `None` on success
-- **Models use Pydantic v2** with aliases to match WSApi's JSON
-- **Timeouts and transport errors** are surfaced as `ApiException` (exception path) or as `ProblemDetails` with status 408/500 in `ApiResponse` (try_ path)
+-   **Close the client** when you're done: `client.close()`
+-   **No-content endpoints** (204) return `None` on success
+-   **Models use Pydantic v2** with aliases to match WSApi's JSON
+-   **Timeouts and transport errors** are surfaced as `ApiException` (exception path) or as `ProblemDetails` with status 408/500 in `ApiResponse` (try\_ path)
 
 ---
 
@@ -130,6 +131,7 @@ There are two ways to receive real-time events from the WSApi: **Webhooks** (rec
 Configure a webhook endpoint in your WSApi instance settings to receive events via HTTP POST requests. This is the most reliable and scalable approach.
 
 ### Setup Process:
+
 1. Configure webhook URL and optional auth header in your WSApi instance settings
 2. Create an endpoint in your web application to receive events
 3. Use the same event parsing functionality as SSE
@@ -152,27 +154,27 @@ def handle_webhook():
     auth_header = request.headers.get('X-Webhook-Auth')  # or your configured header name
     if auth_header != WEBHOOK_AUTH_TOKEN:
         return jsonify({"error": "Unauthorized"}), 401
-    
+
     try:
         # Get the raw JSON event
         raw_event = request.get_json()
-        
+
         # Parse using the same factory as SSE client
         parsed_event = parse_event(request.get_data(as_text=True))
-        
+
         # Handle the event based on type
         if isinstance(parsed_event, MessageEvent) and parsed_event.text:
             print(f"[webhook] New message from {parsed_event.sender_name}: {parsed_event.text}")
-            
+
             # Example: Auto-reply to messages
             # client = WSApiClient(api_key="...", instance_id="...")
             # client.messages.send_text(MessageSendTextRequest(
-            #     to=parsed_event.chat_id, 
+            #     to=parsed_event.chat_id,
             #     text="Thanks for your message!"
             # ))
-        
+
         return jsonify({"status": "success"}), 200
-        
+
     except Exception as e:
         print(f"[webhook] Error processing event: {e}")
         return jsonify({"error": "Processing failed"}), 500
@@ -201,21 +203,21 @@ async def handle_webhook(
     # Optional: Verify auth header if configured
     if x_webhook_auth != WEBHOOK_AUTH_TOKEN:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    
+
     try:
         # Get raw JSON body
         body = await request.body()
-        
+
         # Parse the event
         parsed_event = parse_event(body.decode('utf-8'))
-        
+
         # Handle different event types
         if isinstance(parsed_event, MessageEvent) and parsed_event.text:
             print(f"[webhook] New message: {parsed_event.text}")
             # Process message...
-        
+
         return {"status": "success"}
-        
+
     except Exception as e:
         print(f"[webhook] Error: {e}")
         raise HTTPException(status_code=500, detail="Processing failed")
@@ -253,12 +255,12 @@ sse.stop()
 
 Both webhook and SSE approaches support the same event types:
 
-- **Session**: `SessionLoggedInEvent`, `SessionLoggedOutEvent`, `SessionLoggedErrorEvent`
-- **Messages**: `MessageEvent`, `MessageDeleteEvent`, `MessageReadEvent`, `MessageStarEvent`, `MessageHistorySyncEvent`
-- **Chats**: `ChatPresenceEvent`, `ChatSettingEvent`
-- **Contacts**: `ContactEvent`
-- **Users**: `UserPushNameEvent`, `UserPictureEvent`, `UserPresenceEvent`, `UserStatusEvent`
-- **Calls**: `CallOfferEvent`, `CallAcceptEvent`, `CallTerminateEvent`
+-   **Session**: `SessionLoggedInEvent`, `SessionLoggedOutEvent`, `SessionLoggedErrorEvent`
+-   **Messages**: `MessageEvent`, `MessageDeleteEvent`, `MessageReadEvent`, `MessageStarEvent`, `MessageHistorySyncEvent`
+-   **Chats**: `ChatPresenceEvent`, `ChatSettingEvent`
+-   **Contacts**: `ContactEvent`
+-   **Users**: `UserPushNameEvent`, `UserPictureEvent`, `UserPresenceEvent`, `UserStatusEvent`
+-   **Calls**: `CallOfferEvent`, `CallAcceptEvent`, `CallTerminateEvent`
 
 All events are parsed by `wsapi_client.events.factory.parse_event` which converts raw JSON into strongly-typed Python objects.
 
@@ -266,6 +268,6 @@ All events are parsed by `wsapi_client.events.factory.parse_event` which convert
 
 ## Troubleshooting
 
-- If you see JSON parsing errors, confirm the SDK version matches the WSApi server you're targeting.
-- For webhook issues, check that your endpoint is accessible and returns proper HTTP status codes.
-- For SSE connection issues, verify your API credentials and network connectivity.
+-   If you see JSON parsing errors, confirm the SDK version matches the WSApi server you're targeting.
+-   For webhook issues, check that your endpoint is accessible and returns proper HTTP status codes.
+-   For SSE connection issues, verify your API credentials and network connectivity.

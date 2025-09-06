@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wsapi-client"
-version = "1.0.3"
+version = "1.0.8"
 description = "Python SDK for WSApi: send messages, manage chats/groups, and receive events via webhooks or SSE."
 readme = "../README.md"
 license = { text = "MIT" }
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/wsapi-chat/wsapi-python"
+Homepage = "https://wsapi.chat"
 Repository = "https://github.com/wsapi-chat/wsapi-python"
 
 [tool.hatch.build]
