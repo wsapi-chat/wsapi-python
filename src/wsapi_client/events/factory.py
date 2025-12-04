@@ -20,6 +20,7 @@ from ..models.events.calls.call_accept_event import CallAcceptEvent
 from ..models.events.calls.call_terminate_event import CallTerminateEvent
 from ..models.events.chats.chat_presence_event import ChatPresenceEvent
 from ..models.events.chats.chat_setting_event import ChatSettingEvent
+from ..models.events.groups.group_event import GroupEvent
 from ..models.events.session.session_logged_in_event import SessionLoggedInEvent
 from ..models.events.session.session_logged_out_event import SessionLoggedOutEvent
 from ..models.events.session.session_logged_error_event import SessionLoggedErrorEvent
@@ -31,12 +32,16 @@ _EVENT_TYPES: Dict[str, Type[Any]] = {
     "logged_error": SessionLoggedErrorEvent,
     "chat_presence": ChatPresenceEvent,
     "chat_setting": ChatSettingEvent,
+    "chat_push_name": UserPushNameEvent,
+    "chat_status": UserStatusEvent,
+    "chat_picture": UserPictureEvent,
     "message": MessageEvent,
     "message_delete": MessageDeleteEvent,
     "message_history_sync": MessageHistorySyncEvent,
     "message_read": MessageReadEvent,
     "message_star": MessageStarEvent,
     "contact": ContactEvent,
+    "group": GroupEvent,
     "user_push_name": UserPushNameEvent,
     "user_picture": UserPictureEvent,
     "user_presence": UserPresenceEvent,

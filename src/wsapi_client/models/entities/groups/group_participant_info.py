@@ -1,5 +1,5 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class GroupParticipantInfo(BaseModel):
@@ -8,5 +8,4 @@ class GroupParticipantInfo(BaseModel):
     is_super_admin: bool = Field(alias="isSuperAdmin")
     display_name: str = Field(alias="displayName")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)

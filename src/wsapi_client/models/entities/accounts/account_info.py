@@ -1,5 +1,5 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class AccountInfo(BaseModel):
@@ -11,5 +11,4 @@ class AccountInfo(BaseModel):
     status: str = Field(alias="status")
     picture_id: str = Field(alias="pictureId")
 
-    class Config:
-        populate_by_name = True
+    model_config = ConfigDict(populate_by_name=True)

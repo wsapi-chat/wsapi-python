@@ -2,6 +2,7 @@ from __future__ import annotations
 from ..http import WSApiHttp, ApiResponse
 from ..models.entities.session.session_status import SessionStatus
 from ..models.entities.session.session_pair_code import SessionPairCode
+from ..models.entities.session.session_qr_code import SessionQRCode
 
 
 class SessionClient:
@@ -14,8 +15,8 @@ class SessionClient:
         # If API actually returns base64 JSON, we can add decoding later.
         return self._http.send_bytes("GET", "/session/login/qr/image")
 
-    def get_login_qr_code(self) -> str:
-        return self._http.send_json("GET", "/session/login/qr/code", model=str)
+    def get_login_qr_code(self) -> SessionQRCode:
+        return self._http.send_json("GET", "/session/login/qr/code", model=SessionQRCode)
 
     def get_login_pair_code(self, phone_number: str) -> SessionPairCode:
         return self._http.send_json("GET", f"/session/login/code/{phone_number}", model=SessionPairCode)
@@ -30,8 +31,8 @@ class SessionClient:
     def try_get_login_qr_image(self) -> ApiResponse[bytes]:
         return self._http.try_send_bytes("GET", "/session/login/qr/image")
 
-    def try_get_login_qr_code(self) -> ApiResponse[str]:
-        return self._http.try_send_json("GET", "/session/login/qr/code", model=str)
+    def try_get_login_qr_code(self) -> ApiResponse[SessionQRCode]:
+        return self._http.try_send_json("GET", "/session/login/qr/code", model=SessionQRCode)
 
     def try_get_login_pair_code(self, phone_number: str) -> ApiResponse[SessionPairCode]:
         return self._http.try_send_json("GET", f"/session/login/code/{phone_number}", model=SessionPairCode)

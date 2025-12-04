@@ -76,6 +76,27 @@ else:
 client.close()
 ```
 
+### Advanced Message Options
+
+```python
+# Reply to a message
+reply = MessageSendTextRequest(
+    to="1234567890@s.whatsapp.net",
+    text="This is a reply!",
+    reply_to="MESSAGE_ID_TO_REPLY_TO",
+    reply_to_sender_id="SENDER_JID"  # Required for group replies
+)
+client.messages.send_text(reply)
+
+# Send with ephemeral expiration (disappearing message)
+ephemeral = MessageSendTextRequest(
+    to="1234567890@s.whatsapp.net",
+    text="This message will disappear!",
+    ephemeral_expiration="24h"  # Options: "24h", "7d", "90d"
+)
+client.messages.send_text(ephemeral)
+```
+
 ## Other API Operations
 
 ```python
@@ -96,12 +117,14 @@ client.calls.reject("call_123", RejectCallRequest(caller="+15551234567"))
 
 ### `WSApiClient` Resources:
 
--   **`messages`**: send text/image/video/audio/voice/sticker/document/contact/location/link/reaction, edit_text; mark_as_read, star, delete, delete_for_me
--   **`instance`**: get settings, etc.
+-   **`messages`**: send text/image/video/audio/voice/sticker/document/contact/location/link/reaction, edit_text; mark_as_read, star, delete, delete_for_me (supports replyTo, ephemeralExpiration)
+-   **`account`**: get_info, update_name, update_status, update_picture, update_presence
+-   **`session`**: get_status, get_qr_code, get_pair_code, logout
+-   **`instance`**: get_settings, update_settings
 -   **`media`**: download files
--   **`contacts`**: contact management operations
--   **`groups`**: group management operations
--   **`chats`**: chat management operations
+-   **`contacts`**: list, get, create, update, delete, get_picture, get_business_profile
+-   **`groups`**: list, get, create, delete, update_name/description/picture, manage participants, invite links
+-   **`chats`**: list, get, delete, update_read/archive/pin/mute/ephemeral/presence, get_picture
 -   **`users`**: get_by_id/try_get_by_id
 -   **`calls`**: reject/try_reject
 
@@ -259,6 +282,7 @@ Both webhook and SSE approaches support the same event types:
 -   **Messages**: `MessageEvent`, `MessageDeleteEvent`, `MessageReadEvent`, `MessageStarEvent`, `MessageHistorySyncEvent`
 -   **Chats**: `ChatPresenceEvent`, `ChatSettingEvent`
 -   **Contacts**: `ContactEvent`
+-   **Groups**: `GroupEvent` (participant changes, settings updates)
 -   **Users**: `UserPushNameEvent`, `UserPictureEvent`, `UserPresenceEvent`, `UserStatusEvent`
 -   **Calls**: `CallOfferEvent`, `CallAcceptEvent`, `CallTerminateEvent`
 
