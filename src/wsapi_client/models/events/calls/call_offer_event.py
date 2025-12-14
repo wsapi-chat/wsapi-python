@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -9,6 +10,6 @@ class CallOfferEvent(BaseModel):
     id: str
     caller: str
     chat_id: str = Field(alias="chatId")
-    is_group: bool = Field(alias="isGroup")
     time: datetime
-    is_video: bool = Field(alias="isVideo")
+    is_group: Optional[bool] = Field(default=None, alias="isGroup")
+    is_video: Optional[bool] = Field(default=None, alias="isVideo")

@@ -35,6 +35,10 @@ class TestGroupsClient:
 
         assert result.id == "123456789-987654321@g.us"
         assert result.name == "Test Group"
+        assert result.description == "A test group"
+        assert result.picture == "https://example.com/group-pic.jpg"
+        assert result.invite_link == "https://chat.whatsapp.com/ABC123"
+        assert len(result.participants) == 2
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
         assert call["url"] == "/groups/123456789-987654321@g.us"
@@ -58,15 +62,15 @@ class TestGroupsClient:
         assert len(call["json"]["participants"]) == 2
 
     def test_delete_group(self, wsapi_http):
-        """Test deleting a group."""
+        """Test deleting (leaving) a group."""
         wsapi_http._mock_client.set_response(204)
         client = GroupsClient(wsapi_http)
 
         client.delete("123456789-987654321@g.us")
 
         call = wsapi_http._mock_client.get_last_call()
-        assert call["method"] == "DELETE"
-        assert call["url"] == "/groups/123456789-987654321@g.us"
+        assert call["method"] == "PUT"
+        assert call["url"] == "/groups/123456789-987654321@g.us/leave"
 
     def test_update_description(self, wsapi_http):
         """Test updating group description."""
@@ -109,25 +113,28 @@ class TestGroupsClient:
 
     def test_get_invite_link(self, wsapi_http):
         """Test getting group invite link."""
-        wsapi_http._mock_client.set_response(200, "https://chat.whatsapp.com/ABC123")
+        wsapi_http._mock_client.set_response(200, {"inviteLink": "https://chat.whatsapp.com/ABC123"})
         client = GroupsClient(wsapi_http)
 
         result = client.get_invite_link("123456789-987654321@g.us")
 
-        assert result == "https://chat.whatsapp.com/ABC123"
+        assert result.invite_link == "https://chat.whatsapp.com/ABC123"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
         assert call["url"] == "/groups/123456789-987654321@g.us/invite-link"
 
     def test_get_requests(self, wsapi_http):
         """Test getting group join requests."""
-        wsapi_http._mock_client.set_response(200, ["1234567890@s.whatsapp.net", "9876543210@s.whatsapp.net"])
+        wsapi_http._mock_client.set_response(200, [
+            {"userId": "1234567890@s.whatsapp.net", "requestedAt": "2025-01-01T00:00:00Z"},
+            {"userId": "9876543210@s.whatsapp.net", "requestedAt": "2025-01-02T00:00:00Z"}
+        ])
         client = GroupsClient(wsapi_http)
 
         result = client.get_requests("123456789-987654321@g.us")
 
         assert len(result) == 2
-        assert "1234567890@s.whatsapp.net" in result
+        assert result[0].user_id == "1234567890@s.whatsapp.net"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
         assert call["url"] == "/groups/123456789-987654321@g.us/requests"
@@ -138,7 +145,8 @@ class TestGroupsClient:
         client = GroupsClient(wsapi_http)
 
         request = GroupUpdateParticipantsRequest(
-            participants=["1234567890@s.whatsapp.net", "9876543210@s.whatsapp.net"]
+            participants=["1234567890@s.whatsapp.net", "9876543210@s.whatsapp.net"],
+            action="add"
         )
         client.update_participants("123456789-987654321@g.us", request)
 
@@ -146,23 +154,31 @@ class TestGroupsClient:
         assert call["method"] == "PUT"
         assert call["url"] == "/groups/123456789-987654321@g.us/participants"
         assert len(call["json"]["participants"]) == 2
+        assert call["json"]["action"] == "add"
 
     def test_get_invite_info(self, wsapi_http):
         """Test getting invite info by code."""
         wsapi_http._mock_client.set_response(200, {
-            "code": "ABC123",
-            "group": "123456789-987654321@g.us",
-            "expires": "2025-12-31T23:59:59Z"
+            "id": "123456789-987654321@g.us",
+            "ownerId": "1234567890@s.whatsapp.net",
+            "name": "Test Group",
+            "created": "2025-01-01T00:00:00Z",
+            "description": "A test group",
+            "isAnnounce": False,
+            "isLocked": False,
+            "isEphemeral": False,
+            "ephemeralExpiration": 0,
+            "participants": [{"id": "1234567890@s.whatsapp.net"}]
         })
         client = GroupsClient(wsapi_http)
 
         result = client.get_invite_info("ABC123")
 
-        assert result.code == "ABC123"
-        assert result.group == "123456789-987654321@g.us"
+        assert result.id == "123456789-987654321@g.us"
+        assert result.name == "Test Group"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
-        assert call["url"] == "/group-invites/ABC123"
+        assert call["url"] == "/groups/invite/ABC123"
 
 
 class TestGroupsClientTryMethods:

@@ -1,13 +1,12 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional
+from pydantic import BaseModel, ConfigDict
 
 
 class UserInfo(BaseModel):
+    """User information returned from GET /users/{phone}."""
     model_config = ConfigDict(populate_by_name=True)
 
-    id: str
-    is_in_whats_app: bool = Field(alias="isInWhatsApp")
-    status: str
-    picture_id: str = Field(alias="pictureId")
-    picture_url: str = Field(alias="pictureUrl")
-    is_verified: bool = Field(alias="isVerified")
+    jid: Optional[str] = None
+    name: Optional[str] = None
+    status: Optional[str] = None

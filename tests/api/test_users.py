@@ -15,7 +15,7 @@ class TestUsersClient:
 
         result = client.get_by_id("1234567890@s.whatsapp.net")
 
-        assert result.id == "1234567890@s.whatsapp.net"
+        assert result.jid == "1234567890@s.whatsapp.net"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
         assert call["url"] == "/users/1234567890@s.whatsapp.net"
@@ -49,7 +49,7 @@ class TestUsersClientTryMethods:
         response = client.try_get_by_id("1234567890@s.whatsapp.net")
 
         assert response.is_success
-        assert response.result.id == "1234567890@s.whatsapp.net"
+        assert response.result.jid == "1234567890@s.whatsapp.net"
 
     def test_try_get_by_id_not_found(self, wsapi_http):
         """Test try_get_by_id when user not found."""

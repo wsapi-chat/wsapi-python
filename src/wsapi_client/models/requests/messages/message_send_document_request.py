@@ -7,7 +7,7 @@ from .message_request_base import MessageRequestBase
 
 class MessageSendDocumentRequest(MessageRequestBase):
     document_base64: Optional[str] = Field(default=None, alias="documentBase64")
-    document_url: Optional[str] = Field(default=None, alias="documentUrl")
+    document_url: Optional[str] = Field(default=None, alias="documentURL")
     file_name: str = Field(alias="fileName")
     caption: Optional[str] = Field(default=None, alias="caption")
 

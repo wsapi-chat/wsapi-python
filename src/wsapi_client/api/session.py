@@ -22,7 +22,7 @@ class SessionClient:
         return self._http.send_json("GET", f"/session/login/code/{phone_number}", model=SessionPairCode)
 
     def logout(self) -> None:
-        self._http.send_json("POST", "/session/logout", model=dict)
+        self._http.send_json("POST", "/session/logout", model=None)
 
     def get_session_status(self) -> SessionStatus:
         return self._http.send_json("GET", "/session/status", model=SessionStatus)
@@ -37,8 +37,8 @@ class SessionClient:
     def try_get_login_pair_code(self, phone_number: str) -> ApiResponse[SessionPairCode]:
         return self._http.try_send_json("GET", f"/session/login/code/{phone_number}", model=SessionPairCode)
 
-    def try_logout(self) -> ApiResponse[object]:
-        return self._http.try_send_json("POST", "/session/logout", model=dict)
+    def try_logout(self) -> ApiResponse[None]:
+        return self._http.try_send_json("POST", "/session/logout", model=None)
 
     def try_get_session_status(self) -> ApiResponse[SessionStatus]:
         return self._http.try_send_json("GET", "/session/status", model=SessionStatus)

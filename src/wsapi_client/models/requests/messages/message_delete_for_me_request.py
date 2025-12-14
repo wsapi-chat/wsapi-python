@@ -7,6 +7,6 @@ class MessageDeleteForMeRequest(BaseModel):
     chat_id: str = Field(alias="chatId")
     sender_id: str = Field(alias="senderId")
     is_from_me: bool = Field(alias="isFromMe")
-    time: datetime = Field(alias="time")
+    timestamp: datetime = Field(alias="timestamp")
 
     model_config = ConfigDict(populate_by_name=True)

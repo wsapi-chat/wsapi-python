@@ -2,8 +2,9 @@ from __future__ import annotations
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class MessageStarRequest(BaseModel):
+class ChatPushNameEvent(BaseModel):
+    """Event for chat push name updates."""
     model_config = ConfigDict(populate_by_name=True)
 
-    chat_id: str = Field(alias="chatId")
-    sender_id: str = Field(alias="senderId")
+    id: str
+    push_name: str = Field(alias="pushName")

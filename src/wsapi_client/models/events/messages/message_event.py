@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict
 from ...entities.users.sender import Sender
 from ...entities.messages.message_reply_to import MessageReplyTo
@@ -9,28 +10,35 @@ from ...entities.messages.message_media import MessageMedia
 from ...entities.messages.message_reaction import MessageReaction
 from ...entities.messages.message_contact import MessageContact
 from ...entities.messages.message_pin import MessagePin
+from ...entities.messages.message_location import MessageLocation
 
 
 class MessageEvent(BaseModel):
+    """Message event data as defined in the OpenAPI spec."""
     model_config = ConfigDict(populate_by_name=True)
 
+    # Required fields per spec
     id: str
     chat_id: str = Field(alias="chatId")
     sender: Sender
-    sender_name: str = Field(alias="senderName")
     time: datetime
-    is_group: bool = Field(alias="isGroup")
-    is_status: bool = Field(alias="isStatus")
-    mentions: list[str] | None = None
-    ephemeral_expiration: str = Field(alias="expiration")
     type: str
 
-    text: str | None = None
-    reply_to: MessageReplyTo | None = Field(alias="replyTo", default=None)
-    extended_text: MessageExtendedText | None = Field(alias="extendedText", default=None)
-    edit_message: MessageEdit | None = Field(alias="editMessage", default=None)
-    media: MessageMedia | None = None
-    reaction: MessageReaction | None = None
-    contact: str | None = None
-    contacts: list[str] | None = Field(alias="contactArray", default=None)
-    pin: MessagePin | None = Field(alias="pinInChat", default=None)
+    # Optional fields per spec
+    is_group: Optional[bool] = Field(default=None, alias="isGroup")
+    is_status: Optional[bool] = Field(default=None, alias="isStatus")
+    mentions: Optional[list[str]] = Field(default=None, alias="mentions")
+    ephemeral_expiration: Optional[str] = Field(default=None, alias="ephemeralExpiration")
+    is_edit: Optional[bool] = Field(default=None, alias="isEdit")
+
+    # Message content fields (mutually exclusive based on type)
+    text: Optional[str] = Field(default=None, alias="text")
+    reply_to: Optional[MessageReplyTo] = Field(default=None, alias="replyTo")
+    extended_text: Optional[MessageExtendedText] = Field(default=None, alias="extendedText")
+    edit: Optional[MessageEdit] = Field(default=None, alias="edit")
+    media: Optional[MessageMedia] = Field(default=None, alias="media")
+    reaction: Optional[MessageReaction] = Field(default=None, alias="reaction")
+    contact: Optional[str] = Field(default=None, alias="contact")
+    contacts: Optional[list[str]] = Field(default=None, alias="contactArray")
+    pin: Optional[MessagePin] = Field(default=None, alias="pin")
+    location: Optional[MessageLocation] = Field(default=None, alias="location")

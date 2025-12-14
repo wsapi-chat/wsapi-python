@@ -11,7 +11,7 @@ class ChatSettingEvent(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     id: str
-    settting_type: str = Field(alias="settingType")
+    setting_type: str = Field(alias="settingType")
     archive: ChatArchive | None = None
     pin: ChatPin | None = None
     read: ChatRead | None = None

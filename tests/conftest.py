@@ -101,7 +101,16 @@ def sample_message_created():
 def sample_chat_info():
     return {
         "id": "1234567890@s.whatsapp.net",
-        "name": "John Doe"
+        "isReadOnly": False,
+        "isGroup": False,
+        "isArchived": False,
+        "isPinned": False,
+        "isEphemeral": False,
+        "isMuted": False,
+        "isSpam": False,
+        "pushName": "John Doe",
+        "businessName": None,
+        "status": "Available"
     }
 
 
@@ -120,29 +129,23 @@ def sample_contact_info():
 
 @pytest.fixture
 def sample_group_info():
+    """Sample group info matching the OpenAPI spec for GET /groups and GET /groups/{groupId}."""
     return {
         "id": "123456789-987654321@g.us",
-        "ownerId": "1234567890@s.whatsapp.net",
         "name": "Test Group",
-        "created": "2025-01-01T00:00:00Z",
         "description": "A test group",
-        "isAnnounce": False,
-        "isLocked": False,
-        "isEphemeral": False,
-        "ephemeralExpiration": 0,
-        "participants": [{"id": "1234567890@s.whatsapp.net"}]
+        "picture": "https://example.com/group-pic.jpg",
+        "inviteLink": "https://chat.whatsapp.com/ABC123",
+        "participants": ["1234567890@s.whatsapp.net", "9876543210@s.whatsapp.net"]
     }
 
 
 @pytest.fixture
 def sample_user_info():
     return {
-        "id": "1234567890@s.whatsapp.net",
-        "isInWhatsApp": True,
-        "status": "Available",
-        "pictureId": "pic_123",
-        "pictureUrl": "https://example.com/pic.jpg",
-        "isVerified": False
+        "jid": "1234567890@s.whatsapp.net",
+        "name": "John Doe",
+        "status": "Available"
     }
 
 

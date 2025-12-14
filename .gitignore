@@ -56,6 +56,4 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# API spec files (development only)
-wsapi.yml
-wsapi-webhooks.yml
+

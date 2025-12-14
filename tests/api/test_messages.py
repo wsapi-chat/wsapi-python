@@ -89,7 +89,7 @@ class TestMessagesClient:
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "POST"
         assert call["url"] == "messages/image"
-        assert call["json"]["imageUrl"] == "https://example.com/image.jpg"
+        assert call["json"]["imageURL"] == "https://example.com/image.jpg"
         assert call["json"]["mimeType"] == "image/jpeg"
 
     def test_send_image_view_once(self, wsapi_http, sample_message_created):
@@ -172,6 +172,7 @@ class TestMessagesClient:
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "POST"
         assert call["url"] == "messages/sticker"
+        assert call["json"]["stickerURL"] == "https://example.com/sticker.webp"
 
     def test_send_document(self, wsapi_http, sample_message_created):
         """Test sending a document message."""
@@ -301,9 +302,7 @@ class TestMessagesClient:
 
         request = MessageStarRequest(
             chat_id="1234567890@s.whatsapp.net",
-            sender_id="1234567890@s.whatsapp.net",
-            message_id="msg_id",
-            starred=True
+            sender_id="1234567890@s.whatsapp.net"
         )
         client.star("msg_id", request)
 
@@ -335,7 +334,7 @@ class TestMessagesClient:
             chat_id="1234567890@s.whatsapp.net",
             sender_id="1234567890@s.whatsapp.net",
             is_from_me=True,
-            time="2025-05-19T00:51:44.816Z"
+            timestamp="2025-05-19T00:51:44.816Z"
         )
         client.delete_for_me("msg_id", request)
 

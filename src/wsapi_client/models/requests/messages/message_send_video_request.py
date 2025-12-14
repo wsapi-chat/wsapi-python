@@ -7,7 +7,7 @@ from .message_request_base import MessageRequestBase
 
 class MessageSendVideoRequest(MessageRequestBase):
     video_base64: Optional[str] = Field(default=None, alias="videoBase64")
-    video_url: Optional[str] = Field(default=None, alias="videoUrl")
+    video_url: Optional[str] = Field(default=None, alias="videoURL")
     mime_type: str = Field(alias="mimeType")
     caption: Optional[str] = Field(default=None, alias="caption")
     view_once: bool = Field(default=False, alias="viewOnce")

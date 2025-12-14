@@ -37,7 +37,7 @@ class TestChatsClient:
         result = client.get("1234567890@s.whatsapp.net")
 
         assert result.id == "1234567890@s.whatsapp.net"
-        assert result.name == "John Doe"
+        assert result.push_name == "John Doe"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
         assert call["url"] == "/chats/1234567890@s.whatsapp.net"

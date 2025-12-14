@@ -3,8 +3,8 @@ from typing import List, Literal
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class GroupUpdateParticipantsRequest(BaseModel):
+class GroupUpdateRequestsRequest(BaseModel):
     participants: List[str] = Field(alias="participants")
-    action: Literal["add", "remove", "promote", "demote"] = Field(alias="action")
+    action: Literal["approve", "reject"] = Field(alias="action")
 
     model_config = ConfigDict(populate_by_name=True)

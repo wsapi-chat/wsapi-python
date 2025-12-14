@@ -19,12 +19,12 @@ from wsapi_client.models.events.calls.call_accept_event import CallAcceptEvent
 from wsapi_client.models.events.calls.call_terminate_event import CallTerminateEvent
 from wsapi_client.models.events.chats.chat_presence_event import ChatPresenceEvent
 from wsapi_client.models.events.chats.chat_setting_event import ChatSettingEvent
+from wsapi_client.models.events.chats.chat_push_name_event import ChatPushNameEvent
+from wsapi_client.models.events.chats.chat_status_event import ChatStatusEvent
+from wsapi_client.models.events.chats.chat_picture_event import ChatPictureEvent
 from wsapi_client.models.events.contacts.contact_event import ContactEvent
 from wsapi_client.models.events.groups.group_event import GroupEvent
-from wsapi_client.models.events.users.user_push_name_event import UserPushNameEvent
 from wsapi_client.models.events.users.user_presence_event import UserPresenceEvent
-from wsapi_client.models.events.users.user_picture_event import UserPictureEvent
-from wsapi_client.models.events.users.user_status_event import UserStatusEvent
 
 
 def make_event(event_type: str, event_data: dict) -> str:
@@ -257,7 +257,7 @@ class TestChatEvents:
         event = parse_event(event_json)
 
         assert isinstance(event, ChatSettingEvent)
-        assert event.settting_type == "mute"
+        assert event.setting_type == "mute"
 
 
 class TestContactEvents:
@@ -313,18 +313,7 @@ class TestGroupEvents:
 
 
 class TestUserEvents:
-    """Tests for user-related events."""
-
-    def test_parse_user_push_name_event(self):
-        """Test parsing a user push name event."""
-        event_json = make_event("user_push_name", {
-            "id": "1234567890@s.whatsapp.net",
-            "pushName": "Johnny"
-        })
-
-        event = parse_event(event_json)
-
-        assert isinstance(event, UserPushNameEvent)
+    """Tests for user-related events (as defined in OpenAPI spec)."""
 
     def test_parse_user_presence_event(self):
         """Test parsing a user presence event."""
@@ -339,32 +328,8 @@ class TestUserEvents:
         assert isinstance(event, UserPresenceEvent)
         assert event.status == "available"
 
-    def test_parse_user_picture_event(self):
-        """Test parsing a user picture event."""
-        event_json = make_event("user_picture", {
-            "id": "1234567890@s.whatsapp.net",
-            "sender": {"id": "1234567890@s.whatsapp.net"},
-            "pictureId": "pic_123"
-        })
-
-        event = parse_event(event_json)
-
-        assert isinstance(event, UserPictureEvent)
-        assert event.picture_id == "pic_123"
-
-    def test_parse_user_status_event(self):
-        """Test parsing a user status event."""
-        event_json = make_event("user_status", {
-            "id": "1234567890@s.whatsapp.net",
-            "status": "Available"
-        })
-
-        event = parse_event(event_json)
-
-        assert isinstance(event, UserStatusEvent)
-
-    def test_parse_chat_push_name_alias(self):
-        """Test parsing chat_push_name which maps to UserPushNameEvent."""
+    def test_parse_chat_push_name_event(self):
+        """Test parsing chat_push_name which maps to ChatPushNameEvent."""
         event_json = make_event("chat_push_name", {
             "id": "1234567890@s.whatsapp.net",
             "pushName": "Johnny"
@@ -372,10 +337,11 @@ class TestUserEvents:
 
         event = parse_event(event_json)
 
-        assert isinstance(event, UserPushNameEvent)
+        assert isinstance(event, ChatPushNameEvent)
+        assert event.push_name == "Johnny"
 
-    def test_parse_chat_status_alias(self):
-        """Test parsing chat_status which maps to UserStatusEvent."""
+    def test_parse_chat_status_event(self):
+        """Test parsing chat_status which maps to ChatStatusEvent."""
         event_json = make_event("chat_status", {
             "id": "1234567890@s.whatsapp.net",
             "status": "Busy"
@@ -383,10 +349,11 @@ class TestUserEvents:
 
         event = parse_event(event_json)
 
-        assert isinstance(event, UserStatusEvent)
+        assert isinstance(event, ChatStatusEvent)
+        assert event.status == "Busy"
 
-    def test_parse_chat_picture_alias(self):
-        """Test parsing chat_picture which maps to UserPictureEvent."""
+    def test_parse_chat_picture_event(self):
+        """Test parsing chat_picture which maps to ChatPictureEvent."""
         event_json = make_event("chat_picture", {
             "id": "1234567890@s.whatsapp.net",
             "sender": {"id": "1234567890@s.whatsapp.net"},
@@ -395,7 +362,7 @@ class TestUserEvents:
 
         event = parse_event(event_json)
 
-        assert isinstance(event, UserPictureEvent)
+        assert isinstance(event, ChatPictureEvent)
         assert event.picture_id == "pic_456"
 
 

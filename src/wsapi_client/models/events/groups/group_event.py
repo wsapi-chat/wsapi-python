@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 from ...entities.users.sender import Sender
@@ -9,12 +9,14 @@ class GroupDescription(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     topic: Optional[str] = None
-    timestamp: Optional[datetime] = None
 
 
 class GroupEvent(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     id: str
-    sender: Sender
+    sender: Optional[Sender] = None
     description: Optional[GroupDescription] = None
+    timestamp: Optional[datetime] = None
+    join: Optional[List[str]] = None
+    leave: Optional[List[str]] = None

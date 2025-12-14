@@ -6,7 +6,7 @@ class MessageMedia(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     media_type: str = Field(alias="mediaType")
-    url: str
+    id: str
     mimetype: str | None = Field(alias="mimeType", default=None)
     file_length: int = Field(alias="fileLength")
     file_sha256: str | None = Field(alias="fileSHA256", default=None)
@@ -20,3 +20,4 @@ class MessageMedia(BaseModel):
     duration: int = 0
     page_count: int = Field(alias="pageCount", default=0)
     title: str | None = None
+    filename: str | None = None

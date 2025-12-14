@@ -7,8 +7,8 @@ from .message_request_base import MessageRequestBase
 
 class MessageSendImageRequest(MessageRequestBase):
     image_base64: Optional[str] = Field(default=None, alias="imageBase64")
-    image_url: Optional[str] = Field(default=None, alias="imageUrl")
-    mime_type: Optional[str] = Field(default=None, alias="mimeType")
+    image_url: Optional[str] = Field(default=None, alias="imageURL")
+    mime_type: str = Field(alias="mimeType")
     caption: Optional[str] = Field(default=None, alias="caption")
     view_once: bool = Field(default=False, alias="viewOnce")
 

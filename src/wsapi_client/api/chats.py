@@ -52,6 +52,9 @@ class ChatsClient:
     def delete_chat(self, chat_id: str) -> None:
         self._http.send_json("DELETE", f"/chats/{chat_id}", model=None)
 
+    def clear(self, chat_id: str) -> None:
+        self._http.send_json("PUT", f"/chats/{chat_id}/clear", model=None)
+
     # Try methods
     def try_list(self) -> ApiResponse[list[ChatInfo]]:
         return self._http.try_send_json("GET", "/chats", model=list[ChatInfo])
@@ -88,3 +91,6 @@ class ChatsClient:
 
     def try_delete_chat(self, chat_id: str) -> ApiResponse[object]:
         return self._http.try_send_json("DELETE", f"/chats/{chat_id}", model=None)
+
+    def try_clear(self, chat_id: str) -> ApiResponse[None]:
+        return self._http.try_send_json("PUT", f"/chats/{chat_id}/clear", model=None)
