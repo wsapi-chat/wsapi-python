@@ -24,7 +24,7 @@ class SSEClient:
         api_key: str,
         instance_id: str,
         *,
-        base_url: str = "https://wsapi.chat",
+        base_url: str = "https://ws.wsapi.chat",
         reconnect_delay: float = 5.0,
         auto_reconnect: bool = True,
         timeout: float = 30.0,

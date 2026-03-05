@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -16,7 +16,7 @@ class MessageSendContactRequest(BaseModel):
 
     # Optional fields
     display_name: Optional[str] = Field(default=None, alias="displayName")
-    mentions: Optional[list[str]] = Field(default=None, alias="mentions")
+    mentions: Optional[List[str]] = Field(default=None, alias="mentions")
     reply_to: Optional[str] = Field(default=None, alias="replyTo")
     is_forwarded: Optional[bool] = Field(default=None, alias="isForwarded")
     reply_to_sender_id: Optional[str] = Field(default=None, alias="replyToSenderId")

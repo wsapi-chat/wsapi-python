@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,4 +11,4 @@ class MessageHistorySyncEvent(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     chat_id: Optional[str] = Field(None, alias="chatId")
-    messages: list[MessageEvent]
+    messages: List[MessageEvent]

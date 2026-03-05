@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, Type
 
 from pydantic import TypeAdapter
 
@@ -27,7 +27,7 @@ from ..models.events.session.session_logged_in_event import SessionLoggedInEvent
 from ..models.events.session.session_logged_out_event import SessionLoggedOutEvent
 from ..models.events.users.user_presence_event import UserPresenceEvent
 
-_EVENT_TYPES: dict[str, type[Any]] = {
+_EVENT_TYPES: Dict[str, Type[Any]] = {
     # Session events
     "logged_in": SessionLoggedInEvent,
     "logged_out": SessionLoggedOutEvent,

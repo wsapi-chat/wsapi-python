@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from ...entities.chats.chat_archive import ChatArchive
@@ -14,8 +16,8 @@ class ChatSettingEvent(BaseModel):
 
     id: str
     setting_type: str = Field(alias="settingType")
-    archive: ChatArchive | None = None
-    pin: ChatPin | None = None
-    read: ChatRead | None = None
-    mute: ChatMute | None = None
-    ephemeral: ChatEphemeral | None = None
+    archive: Optional[ChatArchive] = None
+    pin: Optional[ChatPin] = None
+    read: Optional[ChatRead] = None
+    mute: Optional[ChatMute] = None
+    ephemeral: Optional[ChatEphemeral] = None

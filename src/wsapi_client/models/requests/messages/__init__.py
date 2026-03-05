@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class MessageRequestBase(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     to: str
-    mentions: Optional[list[str]] = None
+    mentions: Optional[List[str]] = None
     reply_to: Optional[str] = Field(None, alias="replyTo")
     reply_to_sender_id: Optional[str] = Field(None, alias="replyToSenderId")
     is_forwarded: Optional[bool] = Field(None, alias="isForwarded")
@@ -72,7 +72,7 @@ class EditMessageRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     to: str
     text: str
-    mentions: Optional[list[str]] = None
+    mentions: Optional[List[str]] = None
     ephemeral_expiration: Optional[str] = Field(None, alias="ephemeralExpiration")
 
 
