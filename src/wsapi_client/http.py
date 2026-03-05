@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Generic, Optional, TypeVar, cast
+from typing import Any, Generic, Optional, Type, TypeVar, Union, cast
 
 import httpx
 from pydantic import BaseModel, TypeAdapter
@@ -27,7 +27,7 @@ class WSApiHttp:
         self,
         api_key: str,
         instance_id: str,
-        base_url: str = "https://wsapi.chat",
+        base_url: str = "https://api.wsapi.chat",
         timeout: float = 30.0,
         client: Optional[httpx.Client] = None,
     ) -> None:
@@ -60,7 +60,7 @@ class WSApiHttp:
             return ProblemDetails(status=500, title="Request Failed", detail=str(exc))
         return ProblemDetails(status=500, title="Request Failed", detail=str(exc))
 
-    def _parse_json(self, data: Any, model: type[T] | Any) -> T:
+    def _parse_json(self, data: Any, model: Union[Type[T], Any]) -> T:
         if isinstance(model, type) and issubclass(model, BaseModel):
             return cast(T, model.model_validate(data))
         adapter = TypeAdapter(model)  # type: ignore[arg-type]
@@ -75,7 +75,9 @@ class WSApiHttp:
         return True
 
     # JSON response
-    def send_json(self, method: str, url: str, *, model: type[T] | Any | None, json: Any | None = None) -> Optional[T]:
+    def send_json(
+        self, method: str, url: str, *, model: Optional[Union[Type[T], Any]], json: Optional[Any] = None
+    ) -> Optional[T]:
         resp = self._client.request(method, url, json=json)
         if 200 <= resp.status_code < 300:
             if model is None or not self._has_body(resp):
@@ -86,7 +88,7 @@ class WSApiHttp:
         raise AssertionError("Unreachable")
 
     def try_send_json(
-        self, method: str, url: str, *, model: type[T] | Any | None, json: Any | None = None
+        self, method: str, url: str, *, model: Optional[Union[Type[T], Any]], json: Optional[Any] = None
     ) -> ApiResponse[Optional[T]]:
         try:
             resp = self._client.request(method, url, json=json)
@@ -105,14 +107,14 @@ class WSApiHttp:
             return ApiResponse(error=self._handle_exception_to_api_response(exc))
 
     # Bytes response
-    def send_bytes(self, method: str, url: str, *, json: Any | None = None) -> bytes:
+    def send_bytes(self, method: str, url: str, *, json: Optional[Any] = None) -> bytes:
         resp = self._client.request(method, url, json=json)
         if 200 <= resp.status_code < 300:
             return resp.content
         self._handle_error(resp)
         raise AssertionError("Unreachable")
 
-    def try_send_bytes(self, method: str, url: str, *, json: Any | None = None) -> ApiResponse[bytes]:
+    def try_send_bytes(self, method: str, url: str, *, json: Optional[Any] = None) -> ApiResponse[bytes]:
         try:
             resp = self._client.request(method, url, json=json)
             if 200 <= resp.status_code < 300:

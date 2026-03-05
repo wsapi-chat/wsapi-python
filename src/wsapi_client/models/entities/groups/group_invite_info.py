@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -22,4 +22,4 @@ class GroupInviteInfo(BaseModel):
     is_locked: bool = Field(alias="isLocked")
     is_ephemeral: bool = Field(alias="isEphemeral")
     ephemeral_expiration: Optional[int] = Field(default=None, alias="ephemeralExpiration")
-    participants: list[GroupParticipantInfo] = Field(alias="participants")
+    participants: List[GroupParticipantInfo] = Field(alias="participants")

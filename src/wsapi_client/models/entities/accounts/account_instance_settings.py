@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -12,4 +12,4 @@ class AccountInstanceSettings(BaseModel):
     webhook_url: Optional[str] = Field(None, alias="webhookUrl")
     event_signing_secret: Optional[str] = Field(None, alias="eventSigningSecret")
     history_sync: Optional[bool] = Field(None, alias="historySync")
-    event_filters: Optional[list[str]] = Field(None, alias="eventFilters")
+    event_filters: Optional[List[str]] = Field(None, alias="eventFilters")

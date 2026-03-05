@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -75,10 +75,10 @@ class GroupEvent(BaseModel):
     description: Optional[GroupDescription] = None
     locked: Optional[GroupLocked] = None
     announce: Optional[GroupAnnounce] = None
-    join: Optional[list[Identity]] = None
-    leave: Optional[list[Identity]] = None
-    promote: Optional[list[Identity]] = None
-    demote: Optional[list[Identity]] = None
+    join: Optional[List[Identity]] = None
+    leave: Optional[List[Identity]] = None
+    promote: Optional[List[Identity]] = None
+    demote: Optional[List[Identity]] = None
     link: Optional[GroupLink] = None
     unlink: Optional[GroupUnlink] = None
     membership_approval: Optional[GroupMembershipApproval] = Field(None, alias="membershipApproval")

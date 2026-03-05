@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -16,4 +16,4 @@ class CommunityInfoResponse(BaseModel):
     description: Optional[str] = None
     is_locked: Optional[bool] = Field(None, alias="isLocked")
     community_approval_mode: Optional[str] = Field(None, alias="communityApprovalMode")
-    participants: Optional[list[GroupParticipant]] = None
+    participants: Optional[List[GroupParticipant]] = None

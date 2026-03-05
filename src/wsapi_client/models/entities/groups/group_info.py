@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -35,7 +35,7 @@ class GroupInfoResponse(BaseModel):
     is_locked: Optional[bool] = Field(None, alias="isLocked")
     is_ephemeral: Optional[bool] = Field(None, alias="isEphemeral")
     ephemeral_expiration: Optional[int] = Field(None, alias="ephemeralExpiration")
-    participants: Optional[list[GroupParticipant]] = None
+    participants: Optional[List[GroupParticipant]] = None
     community_id: Optional[str] = Field(None, alias="communityId")
     is_announcement_group: Optional[bool] = Field(None, alias="isAnnouncementGroup")
     is_join_approval_required: Optional[bool] = Field(None, alias="isJoinApprovalRequired")

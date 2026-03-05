@@ -21,7 +21,7 @@ class WSApiClient:
         api_key: str,
         instance_id: str,
         *,
-        base_url: str = "https://wsapi.chat",
+        base_url: str = "https://api.wsapi.chat",
         timeout: float = 30.0,
     ) -> None:
         self._http = WSApiHttp(api_key=api_key, instance_id=instance_id, base_url=base_url, timeout=timeout)

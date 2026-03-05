@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -30,7 +30,7 @@ class MessageEvent(BaseModel):
     # Optional fields per spec
     is_group: Optional[bool] = Field(default=None, alias="isGroup")
     is_status: Optional[bool] = Field(default=None, alias="isStatus")
-    mentions: Optional[list[str]] = Field(default=None, alias="mentions")
+    mentions: Optional[List[str]] = Field(default=None, alias="mentions")
     ephemeral_expiration: Optional[str] = Field(default=None, alias="ephemeralExpiration")
     is_edit: Optional[bool] = Field(default=None, alias="isEdit")
 
@@ -42,7 +42,7 @@ class MessageEvent(BaseModel):
     media: Optional[MessageMedia] = Field(default=None, alias="media")
     reaction: Optional[MessageReaction] = Field(default=None, alias="reaction")
     contact: Optional[str] = Field(default=None, alias="contact")
-    contacts: Optional[list[str]] = Field(default=None, alias="contactArray")
+    contacts: Optional[List[str]] = Field(default=None, alias="contactArray")
     pin: Optional[MessagePin] = Field(default=None, alias="pin")
     location: Optional[MessageLocation] = Field(default=None, alias="location")
     is_forwarded: Optional[bool] = Field(default=None, alias="isForwarded")

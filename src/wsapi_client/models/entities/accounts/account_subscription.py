@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -16,4 +16,4 @@ class AccountSubscription(BaseModel):
     price: Optional[str] = None
     status: Optional[str] = None
     cancel_at_period_end: Optional[bool] = Field(None, alias="cancelAtPeriodEnd")
-    instance_ids: Optional[list[str]] = Field(None, alias="instanceIds")
+    instance_ids: Optional[List[str]] = Field(None, alias="instanceIds")
