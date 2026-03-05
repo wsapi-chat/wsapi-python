@@ -155,35 +155,37 @@ Configure a webhook endpoint in your WSApi instance settings to receive events v
 
 ### Setup Process:
 
-1. Configure webhook URL and optional auth header in your WSApi instance settings
+1. Configure webhook URL and signing secret in your WSApi instance settings
 2. Create an endpoint in your web application to receive events
-3. Use the same event parsing functionality as SSE
+3. Verify the webhook signature using `verify_signature()`
+4. Use the same event parsing functionality as SSE
 
 ### Example using Flask:
 
 ```python
 from flask import Flask, request, jsonify
+from wsapi_client import verify_signature
 from wsapi_client.events.factory import parse_event
 from wsapi_client.models.events.messages import MessageEvent
 
 app = Flask(__name__)
 
 # Configure this in your WSApi instance settings
-WEBHOOK_AUTH_TOKEN = "your-secret-token"
+SIGNING_SECRET = "your-signing-secret"
 
 @app.route('/wsapi/webhook', methods=['POST'])
 def handle_webhook():
-    # Optional: Verify auth header if configured
-    auth_header = request.headers.get('X-Webhook-Auth')  # or your configured header name
-    if auth_header != WEBHOOK_AUTH_TOKEN:
-        return jsonify({"error": "Unauthorized"}), 401
+    # Read the raw body before parsing — signature is computed over raw bytes
+    raw_body = request.get_data()
+
+    # Verify the HMAC-SHA256 webhook signature
+    signature = request.headers.get("X-Webhook-Signature", "")
+    if not verify_signature(raw_body, SIGNING_SECRET, signature):
+        return jsonify({"error": "Invalid signature"}), 401
 
     try:
-        # Get the raw JSON event
-        raw_event = request.get_json()
-
         # Parse using the same factory as SSE client
-        parsed_event = parse_event(request.get_data(as_text=True))
+        parsed_event = parse_event(raw_body.decode("utf-8"))
 
         # Handle the event based on type
         if isinstance(parsed_event, MessageEvent) and parsed_event.text:
@@ -210,27 +212,28 @@ if __name__ == '__main__':
 
 ```python
 from fastapi import FastAPI, Request, HTTPException, Header
+from wsapi_client import verify_signature
 from wsapi_client.events.factory import parse_event
 from wsapi_client.models.events.messages import MessageEvent
 from typing import Optional
 
 app = FastAPI()
 
-WEBHOOK_AUTH_TOKEN = "your-secret-token"
+SIGNING_SECRET = "your-signing-secret"
 
 @app.post("/wsapi/webhook")
 async def handle_webhook(
     request: Request,
-    x_webhook_auth: Optional[str] = Header(None)  # Adjust header name as configured
+    x_webhook_signature: Optional[str] = Header(None),
 ):
-    # Optional: Verify auth header if configured
-    if x_webhook_auth != WEBHOOK_AUTH_TOKEN:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    # Read the raw body before parsing — signature is computed over raw bytes
+    body = await request.body()
+
+    # Verify the HMAC-SHA256 webhook signature
+    if not verify_signature(body, SIGNING_SECRET, x_webhook_signature or ""):
+        raise HTTPException(status_code=401, detail="Invalid signature")
 
     try:
-        # Get raw JSON body
-        body = await request.body()
-
         # Parse the event
         parsed_event = parse_event(body.decode('utf-8'))
 
