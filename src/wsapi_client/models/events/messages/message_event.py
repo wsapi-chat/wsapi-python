@@ -1,20 +1,23 @@
 from __future__ import annotations
+
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
-from ...entities.users.sender import Sender
-from ...entities.messages.message_reply_to import MessageReplyTo
-from ...entities.messages.message_extended_text import MessageExtendedText
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from ...entities.messages.message_edit import MessageEdit
-from ...entities.messages.message_media import MessageMedia
-from ...entities.messages.message_reaction import MessageReaction
-from ...entities.messages.message_contact import MessageContact
-from ...entities.messages.message_pin import MessagePin
+from ...entities.messages.message_extended_text import MessageExtendedText
 from ...entities.messages.message_location import MessageLocation
+from ...entities.messages.message_media import MessageMedia
+from ...entities.messages.message_pin import MessagePin
+from ...entities.messages.message_reaction import MessageReaction
+from ...entities.messages.message_reply_to import MessageReplyTo
+from ...entities.users.sender import Sender
 
 
 class MessageEvent(BaseModel):
     """Message event data as defined in the OpenAPI spec."""
+
     model_config = ConfigDict(populate_by_name=True)
 
     # Required fields per spec
@@ -42,3 +45,5 @@ class MessageEvent(BaseModel):
     contacts: Optional[list[str]] = Field(default=None, alias="contactArray")
     pin: Optional[MessagePin] = Field(default=None, alias="pin")
     location: Optional[MessageLocation] = Field(default=None, alias="location")
+    is_forwarded: Optional[bool] = Field(default=None, alias="isForwarded")
+    view_once: Optional[bool] = Field(default=None, alias="viewOnce")

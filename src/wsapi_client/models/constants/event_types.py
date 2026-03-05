@@ -4,7 +4,7 @@ from __future__ import annotations
 class EventTypes:
     # Session events
     LOGGED_IN = "logged_in"
-    LOGGED_ERROR = "logged_error"
+    LOGIN_ERROR = "login_error"
     LOGGED_OUT = "logged_out"
     INITIAL_SYNC_FINISHED = "initial_sync_finished"
 
@@ -27,6 +27,9 @@ class EventTypes:
 
     # Group events
     GROUP = "group"
+
+    # Newsletter events
+    NEWSLETTER = "newsletter"
 
     # User events
     USER_PUSH_NAME = "user_push_name"

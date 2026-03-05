@@ -1,12 +1,16 @@
 from __future__ import annotations
+
 from datetime import datetime
-from typing import List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from .group_participant_info import GroupParticipantInfo
 
 
 class GroupInviteInfo(BaseModel):
     """Group information returned from invite code lookup (GET /groups/invite/{code})."""
+
     model_config = ConfigDict(populate_by_name=True)
 
     id: str = Field(alias="id")
@@ -18,4 +22,4 @@ class GroupInviteInfo(BaseModel):
     is_locked: bool = Field(alias="isLocked")
     is_ephemeral: bool = Field(alias="isEphemeral")
     ephemeral_expiration: Optional[int] = Field(default=None, alias="ephemeralExpiration")
-    participants: List[GroupParticipantInfo] = Field(alias="participants")
+    participants: list[GroupParticipantInfo] = Field(alias="participants")

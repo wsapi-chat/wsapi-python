@@ -1,37 +1,37 @@
 from __future__ import annotations
-from datetime import datetime
-from typing import Any, Dict, Type
+
+from typing import Any
 
 from pydantic import TypeAdapter
 
 from ..models.events.base_event import BaseEvent
-from ..models.events.messages.message_star_event import MessageStarEvent
-from ..models.events.messages.message_read_event import MessageReadEvent
-from ..models.events.messages.message_event import MessageEvent
-from ..models.events.messages.message_delete_event import MessageDeleteEvent
-from ..models.events.messages.message_history_sync_event import MessageHistorySyncEvent
-from ..models.events.contacts.contact_event import ContactEvent
-from ..models.events.users.user_presence_event import UserPresenceEvent
-from ..models.events.calls.call_offer_event import CallOfferEvent
 from ..models.events.calls.call_accept_event import CallAcceptEvent
+from ..models.events.calls.call_offer_event import CallOfferEvent
 from ..models.events.calls.call_terminate_event import CallTerminateEvent
-from ..models.events.chats.chat_presence_event import ChatPresenceEvent
-from ..models.events.chats.chat_setting_event import ChatSettingEvent
-from ..models.events.chats.chat_push_name_event import ChatPushNameEvent
-from ..models.events.chats.chat_status_event import ChatStatusEvent
 from ..models.events.chats.chat_picture_event import ChatPictureEvent
+from ..models.events.chats.chat_presence_event import ChatPresenceEvent
+from ..models.events.chats.chat_push_name_event import ChatPushNameEvent
+from ..models.events.chats.chat_setting_event import ChatSettingEvent
+from ..models.events.chats.chat_status_event import ChatStatusEvent
+from ..models.events.contacts.contact_event import ContactEvent
 from ..models.events.groups.group_event import GroupEvent
+from ..models.events.messages.message_delete_event import MessageDeleteEvent
+from ..models.events.messages.message_event import MessageEvent
+from ..models.events.messages.message_history_sync_event import MessageHistorySyncEvent
+from ..models.events.messages.message_read_event import MessageReadEvent
+from ..models.events.messages.message_star_event import MessageStarEvent
+from ..models.events.newsletters.newsletter_event import NewsletterEvent
+from ..models.events.session.initial_sync_finished_event import InitialSyncFinishedEvent
+from ..models.events.session.session_logged_error_event import SessionLoggedErrorEvent
 from ..models.events.session.session_logged_in_event import SessionLoggedInEvent
 from ..models.events.session.session_logged_out_event import SessionLoggedOutEvent
-from ..models.events.session.session_logged_error_event import SessionLoggedErrorEvent
-from ..models.events.session.initial_sync_finished_event import InitialSyncFinishedEvent
+from ..models.events.users.user_presence_event import UserPresenceEvent
 
-
-_EVENT_TYPES: Dict[str, Type[Any]] = {
+_EVENT_TYPES: dict[str, type[Any]] = {
     # Session events
     "logged_in": SessionLoggedInEvent,
     "logged_out": SessionLoggedOutEvent,
-    "logged_error": SessionLoggedErrorEvent,
+    "login_error": SessionLoggedErrorEvent,
     "initial_sync_finished": InitialSyncFinishedEvent,
     # Chat events
     "chat_presence": ChatPresenceEvent,
@@ -49,6 +49,8 @@ _EVENT_TYPES: Dict[str, Type[Any]] = {
     "contact": ContactEvent,
     # Group events
     "group": GroupEvent,
+    # Newsletter events
+    "newsletter": NewsletterEvent,
     # User events
     "user_presence": UserPresenceEvent,
     # Call events
@@ -79,12 +81,16 @@ def parse_event(raw_json: str) -> BaseEvent:
     # Deserialize payload
     payload = TypeAdapter(model).validate_python(data)
 
-    # Inject base props for convenience if payload doesn’t derive BaseEvent
-    base = BaseEvent.model_validate({
+    # Inject base props for convenience if payload doesn't derive BaseEvent
+    base_data = {
         "instanceId": obj["instanceId"],
         "receivedAt": obj["receivedAt"],
         "eventType": event_type,
-    })
+    }
+    if "eventId" in obj:
+        base_data["eventId"] = obj["eventId"]
+
+    base = BaseEvent.model_validate(base_data)
 
     # Attach base info dynamically
     # For now, return the payload; callers can use base separately if needed.

@@ -1,8 +1,9 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class GroupSetJoinApprovalRequest(BaseModel):
-    join_approval: bool = Field(alias="joinApproval")
+    enabled: bool = Field(alias="enabled")
 
     model_config = ConfigDict(populate_by_name=True)

@@ -1,5 +1,7 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict
+
 from ...entities.users.sender import Sender
 
 
@@ -8,5 +10,4 @@ class ChatPresenceEvent(BaseModel):
 
     id: str
     sender: Sender
-    is_from_me: bool = Field(alias="isFromMe")
     state: str

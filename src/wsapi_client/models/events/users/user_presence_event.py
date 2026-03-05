@@ -1,11 +1,15 @@
 from __future__ import annotations
-from datetime import datetime
-from pydantic import BaseModel, Field, ConfigDict
+
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from ...entities.groups.group_info import Identity
 
 
 class UserPresenceEvent(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    id: str
-    status: str
-    last_seen: datetime = Field(alias="lastSeen")
+    user: Optional[Identity] = None
+    status: Optional[str] = None
+    last_seen: Optional[str] = Field(None, alias="lastSeen")

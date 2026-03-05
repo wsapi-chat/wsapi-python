@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 import threading
 import time
-from typing import Callable, Optional, Any
+from enum import Enum
+from typing import Any, Callable, Optional
 
 import httpx
-from enum import Enum
 
 from ..events.factory import parse_event
 
@@ -23,7 +24,7 @@ class SSEClient:
         api_key: str,
         instance_id: str,
         *,
-        base_url: str = "https://ws.wsapi.chat",
+        base_url: str = "https://wsapi.chat",
         reconnect_delay: float = 5.0,
         auto_reconnect: bool = True,
         timeout: float = 30.0,
@@ -98,7 +99,7 @@ class SSEClient:
                                 continue
                             # Only process lines starting with 'data:'
                             if line.startswith("data:"):
-                                payload = line[len("data:"):].strip()
+                                payload = line[len("data:") :].strip()
                                 if payload:
                                     self._emit_event(payload)
                 except Exception as exc:

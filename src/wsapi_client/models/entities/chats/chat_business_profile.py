@@ -1,6 +1,6 @@
 from __future__ import annotations
-from typing import Dict, List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ChatBusinessCategory(BaseModel):
@@ -28,9 +28,9 @@ class ChatBusinessProfile(BaseModel):
     latitude: float = Field(alias="latitude")
     longitude: float = Field(alias="longitude")
     member_since: str = Field(alias="memberSince")
-    categories: List[ChatBusinessCategory] = Field(alias="categories")
+    categories: list[ChatBusinessCategory] = Field(alias="categories")
     business_hours_time_zone: str = Field(alias="businessHoursTimeZone")
-    business_hours: List[BusinessHours] = Field(alias="businessHours")
-    profile_options: Dict[str, str] = Field(alias="profileOptions")
+    business_hours: list[BusinessHours] = Field(alias="businessHours")
+    profile_options: dict[str, str] = Field(alias="profileOptions")
 
     model_config = ConfigDict(populate_by_name=True)

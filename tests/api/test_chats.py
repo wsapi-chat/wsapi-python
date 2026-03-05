@@ -1,14 +1,14 @@
 """
 Tests for ChatsClient API methods.
 """
-import pytest
+
 from wsapi_client.api.chats import ChatsClient
 from wsapi_client.models.requests.chats import (
-    ChatUpdatePresenceRequest,
+    ChatUpdateArchiveRequest,
     ChatUpdateEphemeralExpirationRequest,
     ChatUpdateMuteRequest,
     ChatUpdatePinRequest,
-    ChatUpdateArchiveRequest,
+    ChatUpdatePresenceRequest,
     ChatUpdateReadRequest,
 )
 
@@ -44,10 +44,7 @@ class TestChatsClient:
 
     def test_get_picture(self, wsapi_http):
         """Test getting chat picture."""
-        wsapi_http._mock_client.set_response(200, {
-            "pictureId": "pic_123",
-            "pictureUrl": "https://example.com/pic.jpg"
-        })
+        wsapi_http._mock_client.set_response(200, {"pictureId": "pic_123", "pictureUrl": "https://example.com/pic.jpg"})
         client = ChatsClient(wsapi_http)
 
         result = client.get_picture("1234567890@s.whatsapp.net")
@@ -60,22 +57,23 @@ class TestChatsClient:
 
     def test_get_business_profile(self, wsapi_http):
         """Test getting chat business profile."""
-        wsapi_http._mock_client.set_response(200, {
-            "id": "1234567890@s.whatsapp.net",
-            "address": "123 Main St",
-            "description": "A business",
-            "email": "info@example.com",
-            "website": "https://example.com",
-            "latitude": 37.7749,
-            "longitude": -122.4194,
-            "memberSince": "2020-01-01",
-            "categories": [{"id": "cat1", "name": "Retail"}],
-            "businessHoursTimeZone": "America/Los_Angeles",
-            "businessHours": [
-                {"dayOfWeek": "Monday", "mode": "OPEN", "openTime": "09:00", "closeTime": "17:00"}
-            ],
-            "profileOptions": {"option1": "value1"}
-        })
+        wsapi_http._mock_client.set_response(
+            200,
+            {
+                "id": "1234567890@s.whatsapp.net",
+                "address": "123 Main St",
+                "description": "A business",
+                "email": "info@example.com",
+                "website": "https://example.com",
+                "latitude": 37.7749,
+                "longitude": -122.4194,
+                "memberSince": "2020-01-01",
+                "categories": [{"id": "cat1", "name": "Retail"}],
+                "businessHoursTimeZone": "America/Los_Angeles",
+                "businessHours": [{"dayOfWeek": "Monday", "mode": "OPEN", "openTime": "09:00", "closeTime": "17:00"}],
+                "profileOptions": {"option1": "value1"},
+            },
+        )
         client = ChatsClient(wsapi_http)
 
         result = client.get_business_profile("1234567890@s.whatsapp.net")
@@ -107,7 +105,7 @@ class TestChatsClient:
 
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "PUT"
-        assert call["url"] == "/chats/1234567890@s.whatsapp.net/presence/set"
+        assert call["url"] == "/chats/1234567890@s.whatsapp.net/presence"
         assert call["json"]["state"] == "typing"
 
     def test_update_ephemeral(self, wsapi_http):

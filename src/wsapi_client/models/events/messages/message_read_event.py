@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from datetime import datetime
 from typing import Literal, Optional
-from pydantic import BaseModel, Field, ConfigDict
-from ...entities.users.sender import Sender
 
+from pydantic import BaseModel, ConfigDict, Field
+
+from ...entities.users.sender import Sender
 
 ReceiptType = Literal[
     "delivered",

@@ -1,25 +1,21 @@
 """
 Pytest configuration and shared fixtures for wsapi-client tests.
 """
+
 from __future__ import annotations
+
 from typing import Any, Optional
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
+
 import pytest
 
-from wsapi_client.http import WSApiHttp, ApiResponse
-from wsapi_client.models.problem_details import ProblemDetails
+from wsapi_client.http import WSApiHttp
 
 
 class MockResponse:
     """Mock httpx response for testing."""
 
-    def __init__(
-        self,
-        status_code: int = 200,
-        json_data: Any = None,
-        content: bytes = b"",
-        text: str = ""
-    ):
+    def __init__(self, status_code: int = 200, json_data: Any = None, content: bytes = b"", text: str = ""):
         self.status_code = status_code
         self._json_data = json_data
         # If json_data is provided, set content to non-empty to indicate body exists
@@ -41,20 +37,11 @@ class MockHttpClient:
         self.calls: list[dict] = []
         self.response: Optional[MockResponse] = None
 
-    def set_response(
-        self,
-        status_code: int = 200,
-        json_data: Any = None,
-        content: bytes = b""
-    ):
+    def set_response(self, status_code: int = 200, json_data: Any = None, content: bytes = b""):
         self.response = MockResponse(status_code, json_data, content)
 
     def request(self, method: str, url: str, json: Any = None) -> MockResponse:
-        self.calls.append({
-            "method": method,
-            "url": url,
-            "json": json
-        })
+        self.calls.append({"method": method, "url": url, "json": json})
         return self.response or MockResponse(200, {})
 
     def stream(self, method: str, url: str):
@@ -81,11 +68,7 @@ def mock_http_client():
 @pytest.fixture
 def wsapi_http(mock_http_client):
     """Fixture that provides a WSApiHttp instance with mocked client."""
-    http = WSApiHttp(
-        api_key="test-api-key",
-        instance_id="test-instance-id",
-        client=mock_http_client
-    )
+    http = WSApiHttp(api_key="test-api-key", instance_id="test-instance-id", client=mock_http_client)
     # Store reference to mock client for test assertions
     http._mock_client = mock_http_client
     return http
@@ -110,7 +93,7 @@ def sample_chat_info():
         "isSpam": False,
         "pushName": "John Doe",
         "businessName": None,
-        "status": "Available"
+        "status": "Available",
     }
 
 
@@ -123,29 +106,32 @@ def sample_contact_info():
         "pushName": "Johnny",
         "status": "Available",
         "pictureId": "pic_123",
-        "inPhoneAddressBook": True
+        "inPhoneAddressBook": True,
     }
 
 
 @pytest.fixture
 def sample_group_info():
-    """Sample group info matching the OpenAPI spec for GET /groups and GET /groups/{groupId}."""
+    """Sample group info matching the v2 OpenAPI spec for GET /groups and GET /groups/{groupId}."""
     return {
-        "id": "123456789-987654321@g.us",
+        "groupId": "123456789-987654321@g.us",
         "name": "Test Group",
         "description": "A test group",
-        "picture": "https://example.com/group-pic.jpg",
-        "inviteLink": "https://chat.whatsapp.com/ABC123",
-        "participants": ["1234567890@s.whatsapp.net", "9876543210@s.whatsapp.net"]
+        "owner": {"id": "1234567890@s.whatsapp.net"},
+        "participants": [
+            {"id": "1234567890@s.whatsapp.net", "isAdmin": True},
+            {"id": "9876543210@s.whatsapp.net", "isAdmin": False},
+        ],
     }
 
 
 @pytest.fixture
 def sample_user_info():
     return {
-        "jid": "1234567890@s.whatsapp.net",
-        "name": "John Doe",
-        "status": "Available"
+        "id": "1234567890@s.whatsapp.net",
+        "phone": "1234567890",
+        "status": "Available",
+        "pictureId": "pic_123",
     }
 
 
@@ -158,16 +144,13 @@ def sample_instance_settings():
         "webhookAuthHeader": "X-Auth",
         "webhookAuthValue": "secret",
         "pullMode": False,
-        "eventFilters": ["message", "message_read"]
+        "eventFilters": ["message", "message_read"],
     }
 
 
 @pytest.fixture
 def sample_session_status():
-    return {
-        "connected": True,
-        "isLoggedIn": True
-    }
+    return {"isConnected": True, "isLoggedIn": True, "deviceId": "device_123"}
 
 
 @pytest.fixture
@@ -179,5 +162,5 @@ def sample_account_info():
         "pushName": "My Account",
         "businessName": "Test Business",
         "status": "Available",
-        "pictureId": "pic_123"
+        "pictureId": "pic_123",
     }

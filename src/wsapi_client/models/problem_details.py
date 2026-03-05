@@ -1,6 +1,8 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class ProblemDetails(BaseModel):

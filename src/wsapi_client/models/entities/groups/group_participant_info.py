@@ -1,10 +1,13 @@
 from __future__ import annotations
+
 from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class GroupParticipantInfo(BaseModel):
     """Group participant information with optional admin status fields."""
+
     model_config = ConfigDict(populate_by_name=True)
 
     id: str = Field(alias="id")

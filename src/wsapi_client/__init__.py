@@ -1,12 +1,12 @@
 from .client import WSApiClient
-from .sse.client import SSEClient, SSEConnectionState
 from .exceptions import ApiException
 from .http import ApiResponse
+from .sse.client import SSEClient, SSEConnectionState
 
 __all__ = [
-    "WSApiClient",
-    "SSEClient",
-    "SSEConnectionState",
     "ApiException",
     "ApiResponse",
+    "SSEClient",
+    "SSEConnectionState",
+    "WSApiClient",
 ]

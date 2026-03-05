@@ -1,10 +1,12 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from ...entities.chats.chat_archive import ChatArchive
+from ...entities.chats.chat_ephemeral import ChatEphemeral
+from ...entities.chats.chat_mute import ChatMute
 from ...entities.chats.chat_pin import ChatPin
 from ...entities.chats.chat_read import ChatRead
-from ...entities.chats.chat_mute import ChatMute
-from ...entities.chats.chat_ephemeral import ChatEphemeral
 
 
 class ChatSettingEvent(BaseModel):

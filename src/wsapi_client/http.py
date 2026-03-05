@@ -1,9 +1,10 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Any, Generic, Optional, Type, TypeVar, cast
+from typing import Any, Generic, Optional, TypeVar, cast
 
 import httpx
-from pydantic import BaseModel, ValidationError, TypeAdapter
+from pydantic import BaseModel, TypeAdapter
 
 from .exceptions import ApiException
 from .models.problem_details import ProblemDetails
@@ -26,7 +27,7 @@ class WSApiHttp:
         self,
         api_key: str,
         instance_id: str,
-        base_url: str = "https://api.wsapi.chat",
+        base_url: str = "https://wsapi.chat",
         timeout: float = 30.0,
         client: Optional[httpx.Client] = None,
     ) -> None:
@@ -59,7 +60,7 @@ class WSApiHttp:
             return ProblemDetails(status=500, title="Request Failed", detail=str(exc))
         return ProblemDetails(status=500, title="Request Failed", detail=str(exc))
 
-    def _parse_json(self, data: Any, model: Type[T] | Any) -> T:
+    def _parse_json(self, data: Any, model: type[T] | Any) -> T:
         if isinstance(model, type) and issubclass(model, BaseModel):
             return cast(T, model.model_validate(data))
         adapter = TypeAdapter(model)  # type: ignore[arg-type]
@@ -74,7 +75,7 @@ class WSApiHttp:
         return True
 
     # JSON response
-    def send_json(self, method: str, url: str, *, model: Type[T] | Any | None, json: Any | None = None) -> Optional[T]:
+    def send_json(self, method: str, url: str, *, model: type[T] | Any | None, json: Any | None = None) -> Optional[T]:
         resp = self._client.request(method, url, json=json)
         if 200 <= resp.status_code < 300:
             if model is None or not self._has_body(resp):
@@ -84,7 +85,9 @@ class WSApiHttp:
         self._handle_error(resp)
         raise AssertionError("Unreachable")
 
-    def try_send_json(self, method: str, url: str, *, model: Type[T] | Any | None, json: Any | None = None) -> ApiResponse[Optional[T]]:
+    def try_send_json(
+        self, method: str, url: str, *, model: type[T] | Any | None, json: Any | None = None
+    ) -> ApiResponse[Optional[T]]:
         try:
             resp = self._client.request(method, url, json=json)
             if 200 <= resp.status_code < 300:

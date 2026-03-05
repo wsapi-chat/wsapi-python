@@ -1,15 +1,18 @@
 from __future__ import annotations
+
 from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ContactInfo(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-
-    # Required fields per OpenAPI spec
-    id: str = Field(alias="id")
-    full_name: str = Field(alias="fullName")
-    in_phone_address_book: bool = Field(alias="inPhoneAddressBook")
-
-    # Optional fields per OpenAPI spec
-    lid: Optional[str] = Field(default=None, alias="lid")
+    id: Optional[str] = None
+    lid: Optional[str] = None
+    phone: Optional[str] = None
+    device: Optional[int] = None
+    full_name: Optional[str] = Field(None, alias="fullName")
+    first_name: Optional[str] = Field(None, alias="firstName")
+    push_name: Optional[str] = Field(None, alias="pushName")
+    business_name: Optional[str] = Field(None, alias="businessName")
+    in_phone_address_book: Optional[bool] = Field(None, alias="inPhoneAddressBook")

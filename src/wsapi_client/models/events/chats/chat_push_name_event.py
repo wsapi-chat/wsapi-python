@@ -1,10 +1,14 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, ConfigDict
+
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from ...entities.groups.group_info import Identity
 
 
 class ChatPushNameEvent(BaseModel):
-    """Event for chat push name updates."""
     model_config = ConfigDict(populate_by_name=True)
 
-    id: str
-    push_name: str = Field(alias="pushName")
+    user: Optional[Identity] = None
+    push_name: Optional[str] = Field(None, alias="pushName")

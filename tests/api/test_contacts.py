@@ -1,10 +1,9 @@
 """
 Tests for ContactsClient API methods.
 """
-import pytest
+
 from wsapi_client.api.contacts import ContactsClient
 from wsapi_client.models.requests.contacts.contact_create_request import ContactCreateRequest
-from wsapi_client.models.requests.contacts.contact_update_request import ContactUpdateRequest
 
 
 class TestContactsClient:
@@ -41,11 +40,7 @@ class TestContactsClient:
         wsapi_http._mock_client.set_response(201)
         client = ContactsClient(wsapi_http)
 
-        request = ContactCreateRequest(
-            id="1234567890@s.whatsapp.net",
-            full_name="New Contact",
-            first_name="New"
-        )
+        request = ContactCreateRequest(id="1234567890@s.whatsapp.net", full_name="New Contact", first_name="New")
         client.create(request)
 
         call = wsapi_http._mock_client.get_last_call()
@@ -54,19 +49,50 @@ class TestContactsClient:
         assert call["json"]["fullName"] == "New Contact"
         assert call["json"]["firstName"] == "New"
 
-    def test_update_contact(self, wsapi_http):
-        """Test updating a contact."""
+    def test_sync(self, wsapi_http):
+        """Test syncing contacts."""
         wsapi_http._mock_client.set_response(204)
         client = ContactsClient(wsapi_http)
 
-        request = ContactUpdateRequest(full_name="Updated Name", first_name="Updated")
-        client.update("1234567890@s.whatsapp.net", request)
+        client.sync()
 
         call = wsapi_http._mock_client.get_last_call()
-        assert call["method"] == "PUT"
-        assert call["url"] == "/contacts/1234567890@s.whatsapp.net"
-        assert call["json"]["fullName"] == "Updated Name"
-        assert call["json"]["firstName"] == "Updated"
+        assert call["method"] == "POST"
+        assert call["url"] == "/contacts/sync"
+
+    def test_get_blocklist(self, wsapi_http):
+        """Test getting blocklist."""
+        wsapi_http._mock_client.set_response(200, ["1234567890@s.whatsapp.net"])
+        client = ContactsClient(wsapi_http)
+
+        result = client.get_blocklist()
+
+        assert len(result) == 1
+        call = wsapi_http._mock_client.get_last_call()
+        assert call["method"] == "GET"
+        assert call["url"] == "/contacts/blocklist"
+
+    def test_block(self, wsapi_http):
+        """Test blocking a contact."""
+        wsapi_http._mock_client.set_response(204)
+        client = ContactsClient(wsapi_http)
+
+        client.block("1234567890@s.whatsapp.net")
+
+        call = wsapi_http._mock_client.get_last_call()
+        assert call["method"] == "POST"
+        assert call["url"] == "/contacts/1234567890@s.whatsapp.net/block"
+
+    def test_unblock(self, wsapi_http):
+        """Test unblocking a contact."""
+        wsapi_http._mock_client.set_response(204)
+        client = ContactsClient(wsapi_http)
+
+        client.unblock("1234567890@s.whatsapp.net")
+
+        call = wsapi_http._mock_client.get_last_call()
+        assert call["method"] == "POST"
+        assert call["url"] == "/contacts/1234567890@s.whatsapp.net/unblock"
 
 
 class TestContactsClientTryMethods:
@@ -97,21 +123,16 @@ class TestContactsClientTryMethods:
         wsapi_http._mock_client.set_response(201)
         client = ContactsClient(wsapi_http)
 
-        request = ContactCreateRequest(
-            id="1234567890@s.whatsapp.net",
-            full_name="New Contact",
-            first_name="New"
-        )
+        request = ContactCreateRequest(id="1234567890@s.whatsapp.net", full_name="New Contact", first_name="New")
         response = client.try_create(request)
 
         assert response.is_success
 
-    def test_try_update_success(self, wsapi_http):
-        """Test try_update on success."""
+    def test_try_sync_success(self, wsapi_http):
+        """Test try_sync on success."""
         wsapi_http._mock_client.set_response(204)
         client = ContactsClient(wsapi_http)
 
-        request = ContactUpdateRequest(full_name="Updated Name", first_name="Updated")
-        response = client.try_update("1234567890@s.whatsapp.net", request)
+        response = client.try_sync()
 
         assert response.is_success

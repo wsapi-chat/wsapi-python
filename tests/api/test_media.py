@@ -1,7 +1,7 @@
 """
 Tests for MediaClient API methods.
 """
-import pytest
+
 from wsapi_client.api.media import MediaClient
 
 
@@ -13,11 +13,11 @@ class TestMediaClient:
         wsapi_http._mock_client.set_response(200, content=b"binary_media_data")
         client = MediaClient(wsapi_http)
 
-        result = client.download("media_123")
+        client.download("media_123")
 
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
-        assert call["url"] == "/media/download?id=media_123"
+        assert call["url"] == "/media/media_123/download"
 
 
 class TestMediaClientTryMethods:
@@ -32,4 +32,4 @@ class TestMediaClientTryMethods:
 
         assert response.is_success
         call = wsapi_http._mock_client.get_last_call()
-        assert call["url"] == "/media/download?id=media_456"
+        assert call["url"] == "/media/media_456/download"

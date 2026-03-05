@@ -1,67 +1,100 @@
 """
 Tests for UsersClient API methods.
 """
-import pytest
+
 from wsapi_client.api.users import UsersClient
 
 
 class TestUsersClient:
     """Test suite for UsersClient."""
 
-    def test_get_by_id(self, wsapi_http, sample_user_info):
-        """Test getting user by ID."""
-        wsapi_http._mock_client.set_response(200, sample_user_info)
+    def test_get_user_profile(self, wsapi_http):
+        """Test getting user profile by ID."""
+        wsapi_http._mock_client.set_response(
+            200,
+            {
+                "id": "1234567890@s.whatsapp.net",
+                "phone": "1234567890",
+                "status": "Available",
+                "pictureId": "pic_123",
+            },
+        )
         client = UsersClient(wsapi_http)
 
-        result = client.get_by_id("1234567890@s.whatsapp.net")
+        result = client.get_user_profile("1234567890@s.whatsapp.net")
 
-        assert result.jid == "1234567890@s.whatsapp.net"
+        assert result.id == "1234567890@s.whatsapp.net"
+        assert result.status == "Available"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
-        assert call["url"] == "/users/1234567890@s.whatsapp.net"
+        assert call["url"] == "/users/1234567890@s.whatsapp.net/profile"
 
-    def test_get_by_id_not_found(self, wsapi_http):
-        """Test getting user by ID when not found."""
+    def test_check(self, wsapi_http):
+        """Test checking if user is on WhatsApp."""
+        wsapi_http._mock_client.set_response(
+            200,
+            {
+                "id": "1234567890@s.whatsapp.net",
+                "isInWhatsApp": True,
+            },
+        )
+        client = UsersClient(wsapi_http)
+
+        result = client.check("1234567890@s.whatsapp.net")
+
+        assert result.is_in_whats_app is True
+        call = wsapi_http._mock_client.get_last_call()
+        assert call["method"] == "GET"
+        assert call["url"] == "/users/1234567890@s.whatsapp.net/check"
+
+    def test_get_user_profile_not_found(self, wsapi_http):
+        """Test getting user profile when not found."""
         wsapi_http._mock_client.set_response(404, None)
         client = UsersClient(wsapi_http)
 
-        # This should return None or raise based on implementation
-        # For now just verify the call was made correctly
-        call_made = False
         try:
-            client.get_by_id("unknown@s.whatsapp.net")
+            client.get_user_profile("unknown@s.whatsapp.net")
         except Exception:
-            call_made = True
+            pass
 
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
-        assert call["url"] == "/users/unknown@s.whatsapp.net"
+        assert call["url"] == "/users/unknown@s.whatsapp.net/profile"
 
 
 class TestUsersClientTryMethods:
     """Test suite for UsersClient try_ methods."""
 
-    def test_try_get_by_id_success(self, wsapi_http, sample_user_info):
-        """Test try_get_by_id on success."""
-        wsapi_http._mock_client.set_response(200, sample_user_info)
+    def test_try_get_user_profile_success(self, wsapi_http):
+        """Test try_get_user_profile on success."""
+        wsapi_http._mock_client.set_response(
+            200,
+            {
+                "id": "1234567890@s.whatsapp.net",
+                "status": "Available",
+            },
+        )
         client = UsersClient(wsapi_http)
 
-        response = client.try_get_by_id("1234567890@s.whatsapp.net")
+        response = client.try_get_user_profile("1234567890@s.whatsapp.net")
 
         assert response.is_success
-        assert response.result.jid == "1234567890@s.whatsapp.net"
+        assert response.result.id == "1234567890@s.whatsapp.net"
 
-    def test_try_get_by_id_not_found(self, wsapi_http):
-        """Test try_get_by_id when user not found."""
-        wsapi_http._mock_client.set_response(404, {
-            "type": "https://wsapi.chat/errors/not-found",
-            "title": "Not Found",
-            "status": 404,
-            "detail": "User not found"
-        })
+    def test_try_get_user_profile_not_found(self, wsapi_http):
+        """Test try_get_user_profile when user not found."""
+        wsapi_http._mock_client.set_response(
+            404,
+            {
+                "type": "https://wsapi.chat/errors/not-found",
+                "title": "Not Found",
+                "status": 404,
+                "detail": "User not found",
+            },
+        )
         client = UsersClient(wsapi_http)
 
-        response = client.try_get_by_id("unknown@s.whatsapp.net")
+        response = client.try_get_user_profile("unknown@s.whatsapp.net")
 
         assert not response.is_success
         assert response.error is not None

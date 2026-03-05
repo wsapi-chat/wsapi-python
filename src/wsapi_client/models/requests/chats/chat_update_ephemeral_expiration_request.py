@@ -1,8 +1,11 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field, ConfigDict
+
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ChatUpdateEphemeralExpirationRequest(BaseModel):
-    expiration: str = Field(alias="expiration")
-
     model_config = ConfigDict(populate_by_name=True)
+
+    expiration: Literal["off", "24h", "7d", "90d"] = Field(alias="expiration")

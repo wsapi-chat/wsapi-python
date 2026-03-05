@@ -1,14 +1,14 @@
 from __future__ import annotations
+
 from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Sender(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-
-    id: str
-    is_me: Optional[bool] = Field(default=None, alias="isMe")
-    push_name: Optional[str] = Field(default=None, alias="pushName")
-    # Legacy fields for backwards compatibility
-    user: Optional[str] = None
+    id: Optional[str] = None
+    lid: Optional[str] = None
+    phone: Optional[str] = None
     device: Optional[int] = None
+    is_me: Optional[bool] = Field(None, alias="isMe")
