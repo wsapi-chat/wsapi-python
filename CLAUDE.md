@@ -42,6 +42,7 @@ cd src && python -m build
   - `events/` - Webhook/SSE event models
   - `constants/` - Enums for event types, message types, presence statuses
 - **`events/factory.py`** - `parse_event()` function that deserializes JSON to typed event models
+- **`webhooks.py`** - `verify_signature()` for HMAC-SHA256 webhook signature verification
 - **`sse/client.py`** - `SSEClient` for real-time event streaming
 
 ### Dual API Pattern
@@ -56,6 +57,7 @@ Each resource client method has two variants:
 - `SSEClient` - Real-time event streaming with auto-reconnect
 - `ApiResponse[T]` - Generic response wrapper for try_ methods
 - `ProblemDetails` - RFC 7807 error format from the API
+- `verify_signature(raw_body, secret, signature_header)` - HMAC-SHA256 webhook signature verification
 
 ### Event Handling
 

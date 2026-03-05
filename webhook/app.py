@@ -20,8 +20,12 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from wsapi_client.events.factory import parse_event
+from wsapi_client.webhooks import verify_signature
 
 app = Flask(__name__)
+
+# Configure your signing secret here (or use an environment variable)
+SIGNING_SECRET = os.environ.get("WSAPI_SIGNING_SECRET", "")
 
 # Store received events for inspection
 received_events = []
@@ -39,9 +43,19 @@ def webhook():
         "eventType": "...",
         "eventData": {...}
     }
+
+    The X-Webhook-Signature header is verified using HMAC-SHA256
+    when a signing secret is configured.
     """
     try:
-        raw_json = request.get_data(as_text=True)
+        raw_body = request.get_data()
+
+        if SIGNING_SECRET:
+            signature_header = request.headers.get("X-Webhook-Signature", "")
+            if not verify_signature(raw_body, SIGNING_SECRET, signature_header):
+                return jsonify({"status": "error", "message": "Invalid signature"}), 401
+
+        raw_json = raw_body.decode("utf-8")
 
         # Parse the event using the library
         event = parse_event(raw_json)

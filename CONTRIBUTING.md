@@ -57,6 +57,7 @@ Thank you for your interest in contributing! This guide will help you get starte
 | `src/wsapi_client/models/events/` | Webhook/SSE event models |
 | `src/wsapi_client/models/constants/` | Enums (event types, message types, presence) |
 | `src/wsapi_client/events/factory.py` | `parse_event()` — JSON to typed event models |
+| `src/wsapi_client/webhooks.py` | `verify_signature()` — HMAC-SHA256 webhook signature verification |
 | `src/wsapi_client/sse/client.py` | `SSEClient` for real-time event streaming |
 | `tests/` | Test suite (pytest + mock HTTP clients) |
 
