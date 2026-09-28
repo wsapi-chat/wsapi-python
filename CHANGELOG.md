@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.0.0]
+
+Breaking changes: invite-info follows GroupInfoResponse, join-link returns the created ID, and join-invite returns None. Consumers of the previous return types and invite-info fields must be updated. Development installs and builds now run from the repository root.
+
+Moved packaging configuration to the repository root so source distributions and wheels build correctly; development installs now use `pip install -e ".[test]"` from the root. Message requests use JSON-mode serialization, including legacy datetime timestamps.
+
+Corrected user, contact, chat, community, newsletter and media routes for normal and Try calls. Query parameters are URL encoded; instance creation accepts an optional name. Legacy message request imports accept old constructor keywords but serialize canonical REST fields; prefer the models exported by `models.requests.messages`. Invite info follows GroupInfoResponse; join-link returns its ID and join-invite returns None (204). Privacy updates/history flush retain response objects. Added context-manager support, event exports, optional ad referral (including history), and reply text.
+
 ## [1.0.10] - 2025-05-30
 
 ### Added

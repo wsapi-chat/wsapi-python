@@ -1,10 +1,5 @@
-from __future__ import annotations
+"""Compatibility import; the canonical request is defined in this package."""
 
-from pydantic import BaseModel, ConfigDict, Field
+from . import StarMessageRequest as MessageStarRequest
 
-
-class MessageStarRequest(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-
-    chat_id: str = Field(alias="chatId")
-    sender_id: str = Field(alias="senderId")
+__all__ = ["MessageStarRequest"]

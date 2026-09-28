@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "wsapi-client"
 dynamic = ["version"]
 description = "Python SDK for WSApi: send messages, manage chats/groups, and receive events via webhooks or SSE."
-readme = "../README.md"
+readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "WSApi" }]
 requires-python = ">=3.9"
@@ -38,10 +38,9 @@ Repository = "https://github.com/wsapi-chat/wsapi-python"
 
 [tool.hatch.version]
 source = "vcs"
-raw-options = { root = ".." }
 
-[tool.hatch.build]
-packages = ["wsapi_client"]
+[tool.hatch.build.targets.sdist]
+include = ["/src/wsapi_client", "/README.md", "/LICENSE", "/pyproject.toml"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["wsapi_client"]
+packages = ["src/wsapi_client"]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from datetime import datetime
+from typing import List, Literal, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -109,7 +110,7 @@ class DeleteMessageForMeRequest(BaseModel):
     chat_id: str = Field(alias="chatId")
     sender_id: Optional[str] = Field(None, alias="senderId")
     is_from_me: Optional[bool] = Field(None, alias="isFromMe")
-    timestamp: Optional[str] = None
+    timestamp: Optional[Union[str, datetime]] = None
 
 
 __all__ = [

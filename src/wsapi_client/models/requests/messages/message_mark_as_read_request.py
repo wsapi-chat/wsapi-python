@@ -1,13 +1,5 @@
-from __future__ import annotations
+"""Compatibility import; the canonical request is defined in this package."""
 
-from typing import Literal
+from . import MarkAsReadRequest as MessageMarkAsReadRequest
 
-from pydantic import BaseModel, ConfigDict, Field
-
-
-class MessageMarkAsReadRequest(BaseModel):
-    chat_id: str = Field(alias="chatId")
-    sender_id: str = Field(alias="senderId")
-    receipt_type: Literal["delivered", "sender", "read", "played"] = Field(alias="receiptType")
-
-    model_config = ConfigDict(populate_by_name=True)
+__all__ = ["MessageMarkAsReadRequest"]

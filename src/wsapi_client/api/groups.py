@@ -97,13 +97,13 @@ class GroupsClient:
             "PUT", f"/groups/{group_id}/settings/member-add-mode", model=None, json=request.model_dump(by_alias=True)
         )
 
-    def join_with_link(self, request: GroupJoinWithLinkRequest) -> None:
-        self._http.send_json("POST", "/groups/join/link", model=None, json=request.model_dump(by_alias=True))
-
-    def join_with_invite(self, request: GroupJoinWithInviteRequest) -> MessageCreated:
+    def join_with_link(self, request: GroupJoinWithLinkRequest) -> MessageCreated:
         return self._http.send_json(
-            "POST", "/groups/join/invite", model=MessageCreated, json=request.model_dump(by_alias=True)
+            "POST", "/groups/join/link", model=MessageCreated, json=request.model_dump(by_alias=True)
         )
+
+    def join_with_invite(self, request: GroupJoinWithInviteRequest) -> None:
+        return self._http.send_json("POST", "/groups/join/invite", model=None, json=request.model_dump(by_alias=True))
 
     def get_invite_info(self, invite_code: str) -> GroupInviteInfo:
         return self._http.send_json("GET", f"/groups/invite/{invite_code}", model=GroupInviteInfo)
@@ -182,12 +182,14 @@ class GroupsClient:
             "PUT", f"/groups/{group_id}/settings/member-add-mode", model=None, json=request.model_dump(by_alias=True)
         )
 
-    def try_join_with_link(self, request: GroupJoinWithLinkRequest) -> ApiResponse[None]:
-        return self._http.try_send_json("POST", "/groups/join/link", model=None, json=request.model_dump(by_alias=True))
-
-    def try_join_with_invite(self, request: GroupJoinWithInviteRequest) -> ApiResponse[MessageCreated]:
+    def try_join_with_link(self, request: GroupJoinWithLinkRequest) -> ApiResponse[MessageCreated]:
         return self._http.try_send_json(
-            "POST", "/groups/join/invite", model=MessageCreated, json=request.model_dump(by_alias=True)
+            "POST", "/groups/join/link", model=MessageCreated, json=request.model_dump(by_alias=True)
+        )
+
+    def try_join_with_invite(self, request: GroupJoinWithInviteRequest) -> ApiResponse[None]:
+        return self._http.try_send_json(
+            "POST", "/groups/join/invite", model=None, json=request.model_dump(by_alias=True)
         )
 
     def try_get_invite_info(self, invite_code: str) -> ApiResponse[GroupInviteInfo]:

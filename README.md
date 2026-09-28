@@ -92,7 +92,7 @@ client.messages.send_text(reply)
 ephemeral = MessageSendTextRequest(
     to="1234567890@s.whatsapp.net",
     text="This message will disappear!",
-    ephemeral_expiration="24h"  # Options: "24h", "7d", "90d"
+    ephemeral_expiration="24h"  # Options: "off", "24h", "7d", "90d"
 )
 client.messages.send_text(ephemeral)
 ```
@@ -101,16 +101,15 @@ client.messages.send_text(ephemeral)
 
 ```python
 # Users
-user = client.users.get_by_id("5511999999999")  # Just phone number for user lookup
+user = client.users.get_user_profile("5511999999999")  # Just phone number for user lookup
 print(user.status)
 
-# Instance settings
-settings = client.instance.get_settings()
-print(f"Instance: {settings.name}")
+# Cloud Account management (not the OSS admin API)
+instances = client.account.list_instances()
 
 # Calls (reject)
-from wsapi_client.models.requests.calls import RejectCallRequest
-client.calls.reject("call_123", RejectCallRequest(caller="+15551234567"))
+from wsapi_client.models.requests.calls.reject_call_request import RejectCallRequest
+client.calls.reject("call_123", RejectCallRequest(caller_id="15551234567@s.whatsapp.net"))
 ```
 
 ## Client Reference
@@ -118,14 +117,13 @@ client.calls.reject("call_123", RejectCallRequest(caller="+15551234567"))
 ### `WSApiClient` Resources:
 
 -   **`messages`**: send text/image/video/audio/voice/sticker/document/contact/location/link/reaction, edit_text; mark_as_read, star, delete, delete_for_me (supports replyTo, ephemeralExpiration)
--   **`account`**: get_info, update_name, update_status, update_picture, update_presence
--   **`session`**: get_status, get_qr_code, get_pair_code, logout
--   **`instance`**: get_settings, update_settings
+-   **`account`**: Cloud instance and subscription management; optional `name` on instance creation
+-   **`session`**: get_session_status, get_qr_image, get_qr_code, get_pair_code, logout, flush_history
 -   **`media`**: download files
--   **`contacts`**: list, get, create, update, delete, get_picture, get_business_profile
+-   **`contacts`**: list, get, create (upsert), sync, get_blocklist, block, unblock
 -   **`groups`**: list, get, create, delete, update_name/description/picture, manage participants, invite links
--   **`chats`**: list, get, delete, update_read/archive/pin/mute/ephemeral/presence, get_picture
--   **`users`**: get_by_id/try_get_by_id
+-   **`chats`**: list, get, delete_chat, update_read/archive/pin/mute/ephemeral/presence, get_picture
+-   **`users`**: get_profile, update_profile, set_presence, privacy settings, check, bulk_check, get_user_profile
 -   **`calls`**: reject/try_reject
 
 ### ApiResponse[T] Pattern
@@ -189,7 +187,7 @@ def handle_webhook():
 
         # Handle the event based on type
         if isinstance(parsed_event, MessageEvent) and parsed_event.text:
-            print(f"[webhook] New message from {parsed_event.sender_name}: {parsed_event.text}")
+            print(f"[webhook] New message from {parsed_event.sender.id}: {parsed_event.text}")
 
             # Example: Auto-reply to messages
             # client = WSApiClient(api_key="...", instance_id="...")
@@ -262,7 +260,7 @@ sse = SSEClient(api_key="<your-api-key>", instance_id="<instance-id>")
 def on_event(evt):
     # evt is one of the typed event models (e.g., MessageEvent)
     if isinstance(evt, MessageEvent) and evt.text:
-        print("[sse]", evt.sender_name, ":", evt.text)
+        print("[sse]", evt.sender.id, ":", evt.text)
 
 def on_state(state, exc):
     print("[sse] Connection state:", state)
@@ -298,3 +296,7 @@ All events are parsed by `wsapi_client.events.factory.parse_event` which convert
 -   If you see JSON parsing errors, confirm the SDK version matches the WSApi server you're targeting.
 -   For webhook issues, check that your endpoint is accessible and returns proper HTTP status codes.
 -   For SSE connection issues, verify your API credentials and network connectivity.
+
+## Unreleased contract update
+
+The working source includes current REST routes and payloads, optional ad attribution on message/history events, and the optional name when creating a Cloud subscription instance. These changes are not published yet. See [CHANGELOG.md](CHANGELOG.md) for compatibility details. Cloud Account management and SSE are not the OSS administrative API; OSS uses `/admin/instances` and webhook/Redis event delivery.

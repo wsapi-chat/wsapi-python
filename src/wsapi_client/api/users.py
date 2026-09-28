@@ -17,19 +17,21 @@ class UsersClient:
 
     # Standard methods
     def get_profile(self) -> UserMeInfo:
-        return self._http.send_json("GET", "/users/profile", model=UserMeInfo)
+        return self._http.send_json("GET", "/users/me/profile", model=UserMeInfo)
 
     def update_profile(self, request: UpdateProfileRequest) -> None:
-        self._http.send_json("PUT", "/users/profile", model=None, json=request.model_dump(by_alias=True))
+        self._http.send_json("PUT", "/users/me/profile", model=None, json=request.model_dump(by_alias=True))
 
     def set_presence(self, request: SetMyPresenceRequest) -> None:
-        self._http.send_json("PUT", "/users/presence", model=None, json=request.model_dump(by_alias=True))
+        self._http.send_json("PUT", "/users/me/presence", model=None, json=request.model_dump(by_alias=True))
 
     def get_privacy_settings(self) -> PrivacySettingsResponse:
-        return self._http.send_json("GET", "/users/privacy", model=PrivacySettingsResponse)
+        return self._http.send_json("GET", "/users/me/privacy", model=PrivacySettingsResponse)
 
-    def set_privacy_setting(self, request: SetPrivacyRequest) -> None:
-        self._http.send_json("PUT", "/users/privacy", model=None, json=request.model_dump(by_alias=True))
+    def set_privacy_setting(self, request: SetPrivacyRequest) -> PrivacySettingsResponse:
+        return self._http.send_json(
+            "PUT", "/users/me/privacy", model=PrivacySettingsResponse, json=request.model_dump(by_alias=True)
+        )
 
     def bulk_check(self, request: BulkCheckRequest) -> list[BulkCheckResult]:
         return self._http.send_json(
@@ -44,19 +46,21 @@ class UsersClient:
 
     # Try methods
     def try_get_profile(self) -> ApiResponse[UserMeInfo]:
-        return self._http.try_send_json("GET", "/users/profile", model=UserMeInfo)
+        return self._http.try_send_json("GET", "/users/me/profile", model=UserMeInfo)
 
     def try_update_profile(self, request: UpdateProfileRequest) -> ApiResponse[None]:
-        return self._http.try_send_json("PUT", "/users/profile", model=None, json=request.model_dump(by_alias=True))
+        return self._http.try_send_json("PUT", "/users/me/profile", model=None, json=request.model_dump(by_alias=True))
 
     def try_set_presence(self, request: SetMyPresenceRequest) -> ApiResponse[None]:
-        return self._http.try_send_json("PUT", "/users/presence", model=None, json=request.model_dump(by_alias=True))
+        return self._http.try_send_json("PUT", "/users/me/presence", model=None, json=request.model_dump(by_alias=True))
 
     def try_get_privacy_settings(self) -> ApiResponse[PrivacySettingsResponse]:
-        return self._http.try_send_json("GET", "/users/privacy", model=PrivacySettingsResponse)
+        return self._http.try_send_json("GET", "/users/me/privacy", model=PrivacySettingsResponse)
 
-    def try_set_privacy_setting(self, request: SetPrivacyRequest) -> ApiResponse[None]:
-        return self._http.try_send_json("PUT", "/users/privacy", model=None, json=request.model_dump(by_alias=True))
+    def try_set_privacy_setting(self, request: SetPrivacyRequest) -> ApiResponse[PrivacySettingsResponse]:
+        return self._http.try_send_json(
+            "PUT", "/users/me/privacy", model=PrivacySettingsResponse, json=request.model_dump(by_alias=True)
+        )
 
     def try_bulk_check(self, request: BulkCheckRequest) -> ApiResponse[list[BulkCheckResult]]:
         return self._http.try_send_json(

@@ -1,17 +1,12 @@
-from __future__ import annotations
+"""Legacy constructor names accepted; serialization uses the current REST fields."""
 
 from typing import Optional
 
-from pydantic import ConfigDict, Field
+from pydantic import AliasChoices, Field
 
-from .message_request_base import MessageRequestBase
+from . import SendMediaRequest
 
 
-class MessageSendVideoRequest(MessageRequestBase):
-    video_base64: Optional[str] = Field(default=None, alias="videoBase64")
-    video_url: Optional[str] = Field(default=None, alias="videoURL")
-    mime_type: str = Field(alias="mimeType")
-    caption: Optional[str] = Field(default=None, alias="caption")
-    view_once: bool = Field(default=False, alias="viewOnce")
-
-    model_config = ConfigDict(populate_by_name=True)
+class MessageSendVideoRequest(SendMediaRequest):
+    data: Optional[str] = Field(None, validation_alias=AliasChoices("data", "videoBase64", "video_base64"))
+    url: Optional[str] = Field(None, validation_alias=AliasChoices("url", "videoURL", "videoUrl", "video_url"))

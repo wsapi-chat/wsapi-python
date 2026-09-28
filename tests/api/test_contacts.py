@@ -80,7 +80,7 @@ class TestContactsClient:
         client.block("1234567890@s.whatsapp.net")
 
         call = wsapi_http._mock_client.get_last_call()
-        assert call["method"] == "POST"
+        assert call["method"] == "PUT"
         assert call["url"] == "/contacts/1234567890@s.whatsapp.net/block"
 
     def test_unblock(self, wsapi_http):
@@ -91,7 +91,7 @@ class TestContactsClient:
         client.unblock("1234567890@s.whatsapp.net")
 
         call = wsapi_http._mock_client.get_last_call()
-        assert call["method"] == "POST"
+        assert call["method"] == "PUT"
         assert call["url"] == "/contacts/1234567890@s.whatsapp.net/unblock"
 
 

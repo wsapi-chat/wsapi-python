@@ -1,11 +1,5 @@
-from __future__ import annotations
+"""Compatibility import; the canonical request is defined in this package."""
 
-from pydantic import BaseModel, ConfigDict, Field
+from . import SendReactionRequest as MessageSendReactionRequest
 
-
-class MessageSendReactionRequest(BaseModel):
-    to: str = Field(alias="to")
-    sender_id: str = Field(alias="senderId")
-    reaction: str = Field(alias="reaction")
-
-    model_config = ConfigDict(populate_by_name=True)
+__all__ = ["MessageSendReactionRequest"]

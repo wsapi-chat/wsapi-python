@@ -24,7 +24,7 @@ Thank you for your interest in contributing! This guide will help you get starte
    ```
 4. **Install in development mode**:
    ```bash
-   pip install -e "./src[dev]"
+   pip install -e ".[dev]"
    ```
 5. **Create a feature branch**:
    ```bash
@@ -42,7 +42,7 @@ Thank you for your interest in contributing! This guide will help you get starte
 | Auto-fix lint issues | `ruff check --fix src/ tests/` |
 | Format check | `ruff format --check src/ tests/` |
 | Auto-format | `ruff format src/ tests/` |
-| Build package | `python -m build src/` |
+| Build package | `python -m build` |
 
 ## Project Structure
 

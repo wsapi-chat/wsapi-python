@@ -17,7 +17,7 @@ class TestMediaClient:
 
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"
-        assert call["url"] == "/media/media_123/download"
+        assert call["url"] == "/media/download?id=media_123"
 
 
 class TestMediaClientTryMethods:
@@ -32,4 +32,4 @@ class TestMediaClientTryMethods:
 
         assert response.is_success
         call = wsapi_http._mock_client.get_last_call()
-        assert call["url"] == "/media/media_456/download"
+        assert call["url"] == "/media/download?id=media_456"

@@ -1,11 +1,5 @@
-from __future__ import annotations
+"""Compatibility import; the canonical request is defined in this package."""
 
-from pydantic import ConfigDict, Field
+from . import MessageSendTextRequest as MessageSendTextRequest
 
-from .message_request_base import MessageRequestBase
-
-
-class MessageSendTextRequest(MessageRequestBase):
-    text: str = Field(alias="text")
-
-    model_config = ConfigDict(populate_by_name=True)
+__all__ = ["MessageSendTextRequest"]

@@ -26,8 +26,8 @@ class SessionClient:
     def get_session_status(self) -> SessionStatus:
         return self._http.send_json("GET", "/session/status", model=SessionStatus)
 
-    def flush_history(self) -> None:
-        self._http.send_json("POST", "/session/flush-history", model=None)
+    def flush_history(self) -> dict[str, str]:
+        return self._http.send_json("POST", "/session/flush-history", model=dict[str, str])
 
     # Try methods
     def try_get_qr_image(self) -> ApiResponse[bytes]:
@@ -45,5 +45,5 @@ class SessionClient:
     def try_get_session_status(self) -> ApiResponse[SessionStatus]:
         return self._http.try_send_json("GET", "/session/status", model=SessionStatus)
 
-    def try_flush_history(self) -> ApiResponse[None]:
-        return self._http.try_send_json("POST", "/session/flush-history", model=None)
+    def try_flush_history(self) -> ApiResponse[dict[str, str]]:
+        return self._http.try_send_json("POST", "/session/flush-history", model=dict[str, str])

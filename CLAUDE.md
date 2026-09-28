@@ -10,10 +10,10 @@ This is a Python SDK for WSApi, a WhatsApp messaging API. The package is publish
 
 ```bash
 # Install in development mode (from repo root)
-pip install -e ./src
+pip install -e .
 
 # Install with test dependencies
-pip install -e "./src[test]"
+pip install -e ".[test]"
 
 # Run all tests
 pytest tests/

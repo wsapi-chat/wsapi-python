@@ -1,16 +1,12 @@
-from __future__ import annotations
+"""Legacy constructor names accepted; serialization uses the current REST fields."""
 
 from typing import Optional
 
-from pydantic import ConfigDict, Field
+from pydantic import AliasChoices, Field
 
-from .message_request_base import MessageRequestBase
+from . import SendStickerRequest
 
 
-class MessageSendStickerRequest(MessageRequestBase):
-    sticker_base64: Optional[str] = Field(default=None, alias="stickerBase64")
-    sticker_url: Optional[str] = Field(default=None, alias="stickerURL")
-    mime_type: str = Field(alias="mimeType")
-    is_animated: bool = Field(default=False, alias="isAnimated")
-
-    model_config = ConfigDict(populate_by_name=True)
+class MessageSendStickerRequest(SendStickerRequest):
+    data: Optional[str] = Field(None, validation_alias=AliasChoices("data", "stickerBase64", "sticker_base64"))
+    url: Optional[str] = Field(None, validation_alias=AliasChoices("url", "stickerURL", "stickerUrl", "sticker_url"))

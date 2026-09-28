@@ -55,7 +55,7 @@ class ChatsClient:
         self._http.send_json("DELETE", f"/chats/{chat_id}", model=None)
 
     def clear(self, chat_id: str) -> None:
-        self._http.send_json("PUT", f"/chats/{chat_id}/clear", model=None)
+        self._http.send_json("POST", f"/chats/{chat_id}/clear", model=None)
 
     def request_messages(self, chat_id: str, request: RequestMessagesRequest) -> None:
         self._http.send_json("POST", f"/chats/{chat_id}/messages", model=None, json=request.model_dump(by_alias=True))
@@ -110,7 +110,7 @@ class ChatsClient:
         return self._http.try_send_json("DELETE", f"/chats/{chat_id}", model=None)
 
     def try_clear(self, chat_id: str) -> ApiResponse[None]:
-        return self._http.try_send_json("PUT", f"/chats/{chat_id}/clear", model=None)
+        return self._http.try_send_json("POST", f"/chats/{chat_id}/clear", model=None)
 
     def try_request_messages(self, chat_id: str, request: RequestMessagesRequest) -> ApiResponse[None]:
         return self._http.try_send_json(

@@ -26,10 +26,10 @@ class ContactsClient:
         return self._http.send_json("GET", "/contacts/blocklist", model=list[str])
 
     def block(self, contact_id: str) -> None:
-        self._http.send_json("POST", f"/contacts/{contact_id}/block", model=None)
+        self._http.send_json("PUT", f"/contacts/{contact_id}/block", model=None)
 
     def unblock(self, contact_id: str) -> None:
-        self._http.send_json("POST", f"/contacts/{contact_id}/unblock", model=None)
+        self._http.send_json("PUT", f"/contacts/{contact_id}/unblock", model=None)
 
     # Try methods
     def try_list(self) -> ApiResponse[list[ContactInfo]]:
@@ -48,7 +48,7 @@ class ContactsClient:
         return self._http.try_send_json("GET", "/contacts/blocklist", model=list[str])
 
     def try_block(self, contact_id: str) -> ApiResponse[None]:
-        return self._http.try_send_json("POST", f"/contacts/{contact_id}/block", model=None)
+        return self._http.try_send_json("PUT", f"/contacts/{contact_id}/block", model=None)
 
     def try_unblock(self, contact_id: str) -> ApiResponse[None]:
-        return self._http.try_send_json("POST", f"/contacts/{contact_id}/unblock", model=None)
+        return self._http.try_send_json("PUT", f"/contacts/{contact_id}/unblock", model=None)

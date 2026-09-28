@@ -5,6 +5,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from ...entities.messages.ad_referral import AdReferral
 from ...entities.messages.message_edit import MessageEdit
 from ...entities.messages.message_extended_text import MessageExtendedText
 from ...entities.messages.message_location import MessageLocation
@@ -26,6 +27,8 @@ class MessageEvent(BaseModel):
     sender: Sender
     time: datetime
     type: str
+
+    ad_referral: Optional[AdReferral] = Field(default=None, alias="adReferral")
 
     # Optional fields per spec
     is_group: Optional[bool] = Field(default=None, alias="isGroup")

@@ -110,7 +110,7 @@ class TestGroupsClient:
 
     def test_get_invite_link(self, wsapi_http):
         """Test getting group invite link."""
-        wsapi_http._mock_client.set_response(200, {"inviteLink": "https://chat.whatsapp.com/ABC123"})
+        wsapi_http._mock_client.set_response(200, {"link": "https://chat.whatsapp.com/ABC123"})
         client = GroupsClient(wsapi_http)
 
         result = client.get_invite_link("123456789-987654321@g.us")
@@ -122,7 +122,7 @@ class TestGroupsClient:
 
     def test_reset_invite_link(self, wsapi_http):
         """Test resetting group invite link."""
-        wsapi_http._mock_client.set_response(200, {"inviteLink": "https://chat.whatsapp.com/NEW123"})
+        wsapi_http._mock_client.set_response(200, {"link": "https://chat.whatsapp.com/NEW123"})
         client = GroupsClient(wsapi_http)
 
         result = client.reset_invite_link("123456789-987654321@g.us")
@@ -190,8 +190,8 @@ class TestGroupsClient:
         wsapi_http._mock_client.set_response(
             200,
             {
-                "id": "123456789-987654321@g.us",
-                "ownerId": "1234567890@s.whatsapp.net",
+                "groupId": "123456789-987654321@g.us",
+                "owner": {"id": "1234567890@s.whatsapp.net"},
                 "name": "Test Group",
                 "created": "2025-01-01T00:00:00Z",
                 "description": "A test group",
@@ -206,7 +206,7 @@ class TestGroupsClient:
 
         result = client.get_invite_info("ABC123")
 
-        assert result.id == "123456789-987654321@g.us"
+        assert result.group_id == "123456789-987654321@g.us"
         assert result.name == "Test Group"
         call = wsapi_http._mock_client.get_last_call()
         assert call["method"] == "GET"

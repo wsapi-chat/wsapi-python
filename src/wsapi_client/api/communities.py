@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from ..http import ApiResponse, WSApiHttp
 from ..models.entities.communities.community_info import CommunityInfoResponse
 from ..models.entities.communities.community_sub_group import CommunitySubGroupResponse
@@ -70,12 +72,12 @@ class CommunitiesClient:
 
     def link_group(self, community_id: str, request) -> None:
         self._http.send_json(
-            "PUT", f"/communities/{community_id}/groups/link", model=None, json=request.model_dump(by_alias=True)
+            "POST", f"/communities/{community_id}/groups/link", model=None, json=request.model_dump(by_alias=True)
         )
 
     def unlink_group(self, community_id: str, request) -> None:
         self._http.send_json(
-            "PUT", f"/communities/{community_id}/groups/unlink", model=None, json=request.model_dump(by_alias=True)
+            "DELETE", f"/communities/{community_id}/groups/{quote(request.group_id, safe='')}", model=None
         )
 
     # Try variants
@@ -139,10 +141,10 @@ class CommunitiesClient:
 
     def try_link_group(self, community_id: str, request) -> ApiResponse[None]:
         return self._http.try_send_json(
-            "PUT", f"/communities/{community_id}/groups/link", model=None, json=request.model_dump(by_alias=True)
+            "POST", f"/communities/{community_id}/groups/link", model=None, json=request.model_dump(by_alias=True)
         )
 
     def try_unlink_group(self, community_id: str, request) -> ApiResponse[None]:
         return self._http.try_send_json(
-            "PUT", f"/communities/{community_id}/groups/unlink", model=None, json=request.model_dump(by_alias=True)
+            "DELETE", f"/communities/{community_id}/groups/{quote(request.group_id, safe='')}", model=None
         )

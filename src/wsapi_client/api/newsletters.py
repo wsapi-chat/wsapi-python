@@ -26,7 +26,7 @@ class NewslettersClient:
 
     def set_subscription(self, newsletter_id: str, request) -> None:
         self._http.send_json(
-            "POST", f"/newsletters/{newsletter_id}/subscription", model=None, json=request.model_dump(by_alias=True)
+            "PUT", f"/newsletters/{newsletter_id}/subscription", model=None, json=request.model_dump(by_alias=True)
         )
 
     def toggle_mute(self, newsletter_id: str, request) -> None:
@@ -51,7 +51,7 @@ class NewslettersClient:
 
     def try_set_subscription(self, newsletter_id: str, request) -> ApiResponse[None]:
         return self._http.try_send_json(
-            "POST", f"/newsletters/{newsletter_id}/subscription", model=None, json=request.model_dump(by_alias=True)
+            "PUT", f"/newsletters/{newsletter_id}/subscription", model=None, json=request.model_dump(by_alias=True)
         )
 
     def try_toggle_mute(self, newsletter_id: str, request) -> ApiResponse[None]:

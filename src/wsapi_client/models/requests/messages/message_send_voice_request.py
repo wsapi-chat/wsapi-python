@@ -1,15 +1,12 @@
-from __future__ import annotations
+"""Legacy constructor names accepted; serialization uses the current REST fields."""
 
 from typing import Optional
 
-from pydantic import ConfigDict, Field
+from pydantic import AliasChoices, Field
 
-from .message_request_base import MessageRequestBase
+from . import SendMediaRequest
 
 
-class MessageSendVoiceRequest(MessageRequestBase):
-    voice_base64: Optional[str] = Field(default=None, alias="voiceBase64")
-    voice_url: Optional[str] = Field(default=None, alias="voiceURL")
-    view_once: bool = Field(default=False, alias="viewOnce")
-
-    model_config = ConfigDict(populate_by_name=True)
+class MessageSendVoiceRequest(SendMediaRequest):
+    data: Optional[str] = Field(None, validation_alias=AliasChoices("data", "voiceBase64", "voice_base64"))
+    url: Optional[str] = Field(None, validation_alias=AliasChoices("url", "voiceURL", "voiceUrl", "voice_url"))

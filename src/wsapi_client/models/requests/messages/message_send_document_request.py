@@ -1,16 +1,13 @@
-from __future__ import annotations
+"""Legacy constructor names accepted; serialization uses the current REST fields."""
 
 from typing import Optional
 
-from pydantic import ConfigDict, Field
+from pydantic import AliasChoices, Field
 
-from .message_request_base import MessageRequestBase
+from . import SendDocumentRequest
 
 
-class MessageSendDocumentRequest(MessageRequestBase):
-    document_base64: Optional[str] = Field(default=None, alias="documentBase64")
-    document_url: Optional[str] = Field(default=None, alias="documentURL")
-    file_name: str = Field(alias="fileName")
-    caption: Optional[str] = Field(default=None, alias="caption")
-
-    model_config = ConfigDict(populate_by_name=True)
+class MessageSendDocumentRequest(SendDocumentRequest):
+    data: Optional[str] = Field(None, validation_alias=AliasChoices("data", "documentBase64", "document_base64"))
+    url: Optional[str] = Field(None, validation_alias=AliasChoices("url", "documentURL", "documentUrl", "document_url"))
+    filename: str = Field(..., validation_alias=AliasChoices("filename", "fileName", "file_name"))

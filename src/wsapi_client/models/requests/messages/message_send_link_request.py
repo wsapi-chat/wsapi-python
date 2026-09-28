@@ -1,17 +1,5 @@
-from __future__ import annotations
+"""Compatibility import; the canonical request is defined in this package."""
 
-from typing import Optional
+from . import SendLinkRequest as MessageSendLinkRequest
 
-from pydantic import ConfigDict, Field
-
-from .message_request_base import MessageRequestBase
-
-
-class MessageSendLinkRequest(MessageRequestBase):
-    text: str = Field(alias="text")
-    url: str = Field(alias="url")
-    title: Optional[str] = Field(default=None, alias="title")
-    description: Optional[str] = Field(default=None, alias="description")
-    jpeg_thumbnail: Optional[str] = Field(default=None, alias="jpegThumbnail")
-
-    model_config = ConfigDict(populate_by_name=True)
+__all__ = ["MessageSendLinkRequest"]

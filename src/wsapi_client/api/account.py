@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Optional
+from urllib.parse import urlencode
 
 from ..http import ApiResponse, WSApiHttp
 from ..models.entities.accounts.account_instance import AccountInstance
@@ -22,7 +23,7 @@ class AccountClient:
         filtered = {k: v for k, v in params.items() if v is not None}
         if not filtered:
             return base
-        query = "&".join(f"{k}={v}" for k, v in filtered.items())
+        query = urlencode(filtered)
         return f"{base}?{query}"
 
     # ── Instances ─────────────────────────────────────────────
@@ -201,17 +202,17 @@ class AccountClient:
         )
         return self._http.try_send_json("GET", url, model=PagedResponse[AccountInstance])
 
-    def create_subscription_instance(self, subscription_id: str) -> str:
+    def create_subscription_instance(self, subscription_id: str, name: Optional[str] = None) -> str:
         return self._http.send_json(
             "POST",
-            f"/account/subscriptions/{subscription_id}/instances",
+            self._build_url(f"/account/subscriptions/{subscription_id}/instances", name=name),
             model=str,
         )
 
-    def try_create_subscription_instance(self, subscription_id: str) -> ApiResponse[str]:
+    def try_create_subscription_instance(self, subscription_id: str, name: Optional[str] = None) -> ApiResponse[str]:
         return self._http.try_send_json(
             "POST",
-            f"/account/subscriptions/{subscription_id}/instances",
+            self._build_url(f"/account/subscriptions/{subscription_id}/instances", name=name),
             model=str,
         )
 

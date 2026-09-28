@@ -42,3 +42,9 @@ class WSApiClient:
 
     def close(self) -> None:
         self._http.close()
+
+    def __enter__(self) -> WSApiClient:
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.close()
