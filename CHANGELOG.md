@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.1.0]
+
+### Added
+
+- Every request model can be imported from `wsapi_client.models`, e.g. `from wsapi_client.models import MessageSendTextRequest`. The longer per-module paths such as `wsapi_client.models.requests.messages` keep working and return the same classes.
+
 ## [3.0.0]
 
 Breaking changes: invite-info follows GroupInfoResponse, join-link returns the created ID, and join-invite returns None. Consumers of the previous return types and invite-info fields must be updated. Development installs and builds now run from the repository root.
