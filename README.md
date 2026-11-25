@@ -112,16 +112,42 @@ from wsapi_client.models.requests.calls.reject_call_request import RejectCallReq
 client.calls.reject("call_123", RejectCallRequest(caller_id="15551234567@s.whatsapp.net"))
 ```
 
+## Passkey Pairing
+
+Some WhatsApp accounts require the owner's passkey (WebAuthn) to link a device. While that step is
+pending, `get_qr_image`, `get_qr_code` and `get_pair_code` fail with HTTP **409** — stop polling them
+and watch `passkey_status` on the session status instead:
+
+```python
+from wsapi_client.models import PasskeyAssertion
+
+status = client.session.get_session_status()
+if status.is_passkey_pending:  # passkey_status is required / submitted / confirmation_required
+    state = client.session.get_passkey_state()
+    if state.status == "required":
+        # Sign state.challenge with navigator.credentials.get() in a browser on state.origin
+        # (https://web.whatsapp.com), then submit credential.toJSON():
+        state = client.session.submit_passkey(PasskeyAssertion.model_validate(browser_json))
+    if state.status == "confirmation_required":
+        # The server sends the confirmation automatically; show the code to the owner,
+        # who compares it and approves on their phone.
+        print("Confirm on your phone:", state.confirmation_code)
+```
+
+Use `client.session.request_passkey()` to ask WhatsApp for a challenge directly (for example when
+the notification does not arrive, or for a passkey-only link without QR or pair code).
+`confirm_passkey()` is kept for compatibility only and is not needed.
+
 ## Client Reference
 
 ### `WSApiClient` Resources:
 
 -   **`messages`**: send text/image/video/audio/voice/sticker/document/contact/location/link/reaction, edit_text; mark_as_read, star, delete, delete_for_me (supports replyTo, ephemeralExpiration)
 -   **`account`**: Cloud instance and subscription management; optional `name` on instance creation
--   **`session`**: get_session_status, get_qr_image, get_qr_code, get_pair_code, logout, flush_history
+-   **`session`**: get_session_status, get_qr_image, get_qr_code, get_pair_code, logout, flush_history, get_passkey_state, submit_passkey, request_passkey, confirm_passkey (compatibility only)
 -   **`media`**: download files
 -   **`contacts`**: list, get, create (upsert), sync, get_blocklist, block, unblock
--   **`groups`**: list, get, create, delete, update_name/description/picture, manage participants, invite links
+-   **`groups`**: list, get, create (participants optional), delete, update_name/description/picture, manage participants, invite links
 -   **`chats`**: list, get, delete_chat, update_read/archive/pin/mute/ephemeral/presence, get_picture
 -   **`users`**: get_profile, update_profile, set_presence, privacy settings, check, bulk_check, get_user_profile
 -   **`calls`**: reject/try_reject

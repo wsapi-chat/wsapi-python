@@ -16,3 +16,6 @@ class UserInfo(BaseModel):
     picture_id: Optional[str] = Field(None, alias="pictureId")
     picture_url: Optional[str] = Field(None, alias="pictureUrl")
     is_verified: Optional[bool] = Field(None, alias="isVerified")
+    """Whether the account is a verified WhatsApp Business account."""
+    verified_name: Optional[str] = Field(None, alias="verifiedName")
+    """Verified business name (``None`` unless the account is a verified business)."""

@@ -29,6 +29,17 @@ class TestUsersClient:
         assert call["method"] == "GET"
         assert call["url"] == "/users/1234567890@s.whatsapp.net/profile"
 
+    def test_get_user_profile_verified_business(self, wsapi_http):
+        """Verified business accounts expose their verified name."""
+        wsapi_http._mock_client.set_response(
+            200, {"id": "1234567890@s.whatsapp.net", "isVerified": True, "verifiedName": "Doe Corp"}
+        )
+
+        result = UsersClient(wsapi_http).get_user_profile("1234567890")
+
+        assert result.is_verified is True
+        assert result.verified_name == "Doe Corp"
+
     def test_check(self, wsapi_http):
         """Test checking if user is on WhatsApp."""
         wsapi_http._mock_client.set_response(

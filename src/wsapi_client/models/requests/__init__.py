@@ -115,6 +115,10 @@ from .newsletters.newsletter_requests import (
     SetSubscriptionRequest,
     ToggleMuteNewsletterRequest,
 )
+from .session import (
+    PasskeyAssertion,
+    PasskeyAuthenticatorResponse,
+)
 from .status.status_requests import (
     PostMediaStatusRequest,
     PostTextStatusRequest,
@@ -180,6 +184,8 @@ __all__ = [
     "MessageSendVideoRequest",
     "MessageSendVoiceRequest",
     "MessageStarRequest",
+    "PasskeyAssertion",
+    "PasskeyAuthenticatorResponse",
     "PinMessageRequest",
     "PostMediaStatusRequest",
     "PostTextStatusRequest",
