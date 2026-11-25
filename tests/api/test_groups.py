@@ -58,6 +58,15 @@ class TestGroupsClient:
         assert call["json"]["name"] == "New Group"
         assert len(call["json"]["participants"]) == 2
 
+    def test_create_group_without_participants(self, wsapi_http):
+        """Participants are optional: the group is created with only the paired account."""
+        wsapi_http._mock_client.set_response(201, {"id": "new-group@g.us"})
+
+        result = GroupsClient(wsapi_http).create(GroupCreateRequest(name="Solo"))
+
+        assert result.id == "new-group@g.us"
+        assert wsapi_http._mock_client.get_last_call()["json"] == {"name": "Solo", "participants": []}
+
     def test_delete_group(self, wsapi_http):
         """Test deleting (leaving) a group."""
         wsapi_http._mock_client.set_response(204)

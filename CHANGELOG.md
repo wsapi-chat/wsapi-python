@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.2.0] - 2026-11-25
+
+### Added
+
+- Passkey (WebAuthn) pairing on `client.session`: `get_passkey_state`, `submit_passkey`, `request_passkey` and `confirm_passkey` (compatibility only — the server now sends the confirmation automatically), each with a `try_` variant. New models `PasskeyState`, `PasskeyChallenge`, `PasskeyAllowCredential` and the request models `PasskeyAssertion` / `PasskeyAuthenticatorResponse` (importable from `wsapi_client.models`); constants `PasskeyStatuses` and `PasskeySources`. `submit_passkey` also accepts the raw `PublicKeyCredential.toJSON()` dict.
+- `SessionStatus.passkey_status` and `SessionStatus.is_passkey_pending`.
+- `UserInfo.verified_name` (verified business name).
+
+### Changed
+
+- `get_qr_image`, `get_qr_code` and `get_pair_code` can now fail with HTTP 409 while a passkey verification step is pending; stop polling them until the step completes, fails or expires.
+- `GroupCreateRequest.participants` is optional: omit it to create a group with only the paired account.
+- `openapi/wsapi-api.yml` updated with the passkey endpoints and schemas, optional group participants and `UserInfo.verifiedName`.
+
+### Fixed
+
+- The bundled OpenAPI spec documented the `DeviceNotPaired` response with status 403; the API returns 409
+
 ## [3.1.0]
 
 ### Added
